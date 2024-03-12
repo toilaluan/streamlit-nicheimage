@@ -138,7 +138,7 @@ def main_midjourney(submitted, prompt, uid, secret_key, seed):
                         loop = get_or_create_eventloop()
                         asyncio.set_event_loop(loop)
                         output = requests.post(
-                            "http://127.0.0.1:10002/generate", json=data
+                            "http://proxy_client_nicheimage.nichetensor.com:10003/generate", json=data
                         )
                         output = output.json()
                         print(output)
