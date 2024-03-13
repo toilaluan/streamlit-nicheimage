@@ -37,7 +37,9 @@ if response.status_code == 200:
             {
                 "uid": k,
                 "model_name": v["model_name"],
-                "mean_score": sum(v["scores"]) / (len(v["scores"]) + 1),
+                "mean_score": (
+                    sum(v["scores"]) / (len(v["scores"])) if len(v["scores"]) > 0 else 0
+                ),
             }
         )
     transformed_dict = pd.DataFrame(transformed_dict)
