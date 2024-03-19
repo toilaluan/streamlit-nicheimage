@@ -244,6 +244,7 @@ def main_page(
                                             use_column_width=True,
                                             output_format="PNG",
                                         )
+                                        all_images.append(image)
 
                         # Save all generated images to session state
                         st.session_state.all_images = all_images
