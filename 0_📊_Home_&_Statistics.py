@@ -51,6 +51,13 @@ if response.status_code == 200:
             continue
         st.write(f"Model: {model}")
         st.bar_chart(model_data[["uid", "mean_score"]].set_index("uid"))
-
+    pd_data = pd.DataFrame(response["all_uid_info"])
+    st.markdown(
+        """
+        **Total Information**
+        """,
+        unsafe_allow_html=True,
+    )
+    st.dataframe(pd_data.T)
 else:
     st.error("Error getting miner info")

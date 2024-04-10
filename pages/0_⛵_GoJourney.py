@@ -123,7 +123,7 @@ def configure_sidebar() -> None:
 
 def main_midjourney(submitted, prompt, uid, secret_key, seed):
     data = {
-        "key": "capricorn_feb",
+        "key": API_TOKEN,
         "prompt": prompt,
         "model_name": "GoJourney",
     }
