@@ -21,7 +21,8 @@ tabs = st.tabs(["🌆 NicheImage", "📚 NicheText"])
 with tabs[0]:
     st.title("🌆 NicheImage Database")
     model_name = st.selectbox(
-        "Select Model", ["GoJourney", "AnimeV3", "RealitiesEdgeXL", "RealisticVision"]
+        "Select Model",
+        ["GoJourney", "AnimeV3", "StickerMaker", "RealitiesEdgeXL", "RealisticVision"],
     )
     query = {"model_name": model_name}
 
