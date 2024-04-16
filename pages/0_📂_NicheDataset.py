@@ -14,7 +14,9 @@ mongo_client = MongoClient(
 db = mongo_client["nicheimage"]
 image_collection = db["images"]
 text_collection = db["texts"]
-
+st.write(
+    "**Below are sample of miners' responses from the NicheImage and NicheText databases.**"
+)
 tabs = st.tabs(["🌆 NicheImage", "📚 NicheText"])
 with tabs[0]:
     st.title("🌆 NicheImage Database")
@@ -43,10 +45,12 @@ with tabs[1]:
     query = {"metadata.model_name": model_name}
 
     cursor = text_collection.find(query, limit=48)
+    cursor.sort("_id", -1)
     data = []
     for text in cursor:
         prompt_input = text["prompt_input"]
         output = text["prompt_output"]["choices"][0]["text"]
-        data.append({"prompt_input": prompt_input, "prompt_output": output})
-    df = pd.DataFrame(data)
-    st.table(df)
+        message = st.chat_message("user")
+        message.write(prompt_input)
+        message = st.chat_message("assistant")
+        message.write(output)
