@@ -22,7 +22,7 @@ with tabs[0]:
     st.title("🌆 NicheImage Database")
     model_name = st.selectbox(
         "Select Model",
-        ["GoJourney", "StickerMaker"],
+        ["GoJourney", "StickerMaker", "FaceToMany"],
     )
     query = {"model_name": model_name}
 
