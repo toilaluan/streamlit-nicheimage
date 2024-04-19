@@ -33,7 +33,7 @@ with tabs[0]:
     cols = st.columns(n_row)
     for image in cursor:
         bucket_name = image["bucket"]
-        object_key = image["key"]
+        object_key = image.get("jpg_key", image["key"])
         image_url = f"http://{bucket_name}.s3.amazonaws.com/{object_key}"
         cols[count % n_row].image(
             image_url, caption=image["prompt"], use_column_width=True
