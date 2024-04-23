@@ -96,7 +96,10 @@ async def call_niche_api(url, data) -> List[Image.Image]:
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(64)) as session:
             async with session.post(url, json=data) as response:
                 response = await response.json()
-            response = response["image"]
+            if isinstance(response, dict):
+                response = response["image"]
+            else:
+                response = response
         return base64_to_image(response)
     except Exception as e:
         print(e)
