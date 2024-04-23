@@ -142,7 +142,8 @@ def main_midjourney(submitted, prompt, uid, secret_key, seed):
                         )
                         output = output.json()
                         print(output)
-                        output = output["response_dict"]
+                        if "response_dict" in output:
+                            output = output["response_dict"]
                         task_id = output["task_id"]
                         task_response = fetch_GoJourney(task_id)
                         task_status = task_response["status"]
