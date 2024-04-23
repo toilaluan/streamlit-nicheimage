@@ -185,7 +185,7 @@ def main_page_sticker_maker(
                         asyncio.set_event_loop(loop)
                         output = loop.run_until_complete(
                             get_output(
-                                "http://3.96.126.66:10003/generate",
+                                "http://proxy_client_nicheimage.nichetensor.com:10003/generate",
                                 duplicate_data,
                             )
                         )
