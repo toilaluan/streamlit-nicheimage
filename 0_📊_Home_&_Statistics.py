@@ -15,14 +15,22 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-response = requests.get(
-    "http://proxy_client_nicheimage.nichetensor.com:10003/get_uid_info"
-)
+response = requests.get("http://nichestorage.nichetensor.com:10000/get_miner_info")
 if response.status_code == 200:
-    response = response.json()
+    all_validator_response = response.json()
+    validator_uids = list(all_validator_response.keys())
+    validator_uids = [int(uid) for uid in validator_uids]
+    validator_uids = sorted(validator_uids)
+    print(validator_uids)
+    validator_select = st.selectbox(
+        "Select a validator",
+        validator_uids,
+    )
+    validator_select = str(validator_select)
+    response = all_validator_response[validator_select]
     # Plot distribution of models
     model_distribution = {}
-    for uid, info in response["all_uid_info"].items():
+    for uid, info in response["info"].items():
         model_name = info["model_name"]
         model_distribution[model_name] = model_distribution.get(model_name, 0) + 1
     fig = px.pie(
@@ -32,7 +40,7 @@ if response.status_code == 200:
     )
     st.plotly_chart(fig)
     transformed_dict = []
-    for k, v in response["all_uid_info"].items():
+    for k, v in response["info"].items():
         transformed_dict.append(
             {
                 "uid": k,
@@ -51,7 +59,7 @@ if response.status_code == 200:
             continue
         st.write(f"Model: {model}")
         st.bar_chart(model_data[["uid", "mean_score"]].set_index("uid"))
-    pd_data = pd.DataFrame(response["all_uid_info"])
+    pd_data = pd.DataFrame(response["info"])
     st.markdown(
         """
         **Total Information**

@@ -1,3 +1,5 @@
+import streamlit as st
+
 import base64
 import io
 import random
@@ -6,12 +8,14 @@ from typing import List
 from PIL import Image
 import aiohttp
 import asyncio
+from streamlit_image_select import image_select
 import requests
 import streamlit as st
 import requests
 import zipfile
 import io
 import pandas as pd
+from core import *
 from utils import icon
 from streamlit_image_select import image_select
 from PIL import Image
@@ -24,13 +28,28 @@ import asyncio
 import plotly.express as px
 from common import set_page_container_style
 
+replicate_text = "NicheImage - Subnet 23 - Bittensor"
+replicate_logo = "assets/NicheTensorTransparent.png"
+replicate_link = "https://github.com/NicheTensor/NicheImage"
 
-def pil_image_to_base64(image: Image.Image) -> str:
-    image_stream = io.BytesIO()
-    image.save(image_stream, format="PNG")
-    base64_image = base64.b64encode(image_stream.getvalue()).decode("utf-8")
+st.set_page_config(
+    page_title="NicheImage Generator", page_icon=replicate_logo, layout="wide"
+)
+set_page_container_style(
+    max_width=1100,
+    max_width_100_percent=True,
+    padding_top=0,
+    padding_right=10,
+    padding_left=5,
+    padding_bottom=10,
+)
 
-    return base64_image
+
+def fetch_GoJourney(task_id):
+    endpoint = "https://api.midjourneyapi.xyz/mj/v2/fetch"
+    data = {"task_id": task_id}
+    response = requests.post(endpoint, json=data)
+    return response.json()
 
 
 def get_or_create_eventloop():
@@ -43,86 +62,81 @@ def get_or_create_eventloop():
             return asyncio.get_event_loop()
 
 
-model_config = {
-    "RealisticVision": {
-        "ratio": {
-            "square": (512, 512),
-            "tall": (512, 768),
-            "wide": (768, 512),
-        },
-        "num_inference_steps": 30,
-        "guidance_scale": 7.0,
-        "clip_skip": 2,
-    },
-    "AnimeV3": {
-        "num_inference_steps": 25,
-        "guidance_scale": 7,
-        "clip_skip": 2,
-        "ratio": {
-            "square": (1024, 1024),
-            "tall": (672, 1024),
-            "wide": (1024, 672),
-        },
-    },
-    "DreamShaper": {
-        "num_inference_steps": 35,
-        "guidance_scale": 7,
-        "clip_skip": 2,
-        "ratio": {
-            "square": (512, 512),
-            "tall": (512, 768),
-            "wide": (768, 512),
-        },
-    },
-    "RealitiesEdgeXL": {
-        "num_inference_steps": 7,
-        "guidance_scale": 2.5,
-        "clip_skip": 2,
-        "ratio": {
-            "square": (1024, 1024),
-            "tall": (672, 1024),
-            "wide": (1024, 672),
-        },
-    },
+# UI configurations
+st.markdown(
+    """<style>
+    #root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 2rem;}
+</style>
+
+""",
+    unsafe_allow_html=True,
+)
+css = """
+<style>
+section.main > div:has(~ footer ) {
+    padding-bottom: 5px;
 }
+</style>
+"""
+st.markdown(css, unsafe_allow_html=True)
+
+# API Tokens and endpoints from `.streamlit/secrets.toml` file
+API_TOKEN = st.secrets["API_TOKEN"]
+# Placeholders for images and gallery
+generated_images_placeholder = st.empty()
+gallery_placeholder = st.empty()
 
 
-def base64_to_image(base64_string):
-    return Image.open(io.BytesIO(base64.b64decode(base64_string)))
+def configure_sidebar() -> None:
+    """
+    Setup and display the sidebar elements.
+
+    This function configures the sidebar of the Streamlit application,
+    including the form for user inputs and the resources section.
+    """
+    with st.sidebar:
+        st.image(replicate_logo, use_column_width=True)
+        with st.form("my_form"):
+            prompt = st.text_area(
+                ":blue[**Enter prompt ✍🏾**]",
+                value="a beautiful flower under the sun --ar 16:9",
+            )
+            mode = st.selectbox("Style", ["3D", "Video game", "Emoji", "Pixels", "Clay", "Toy"])
+            image = st.file_uploader("Upload an image", type=["jpg", "png", "jpeg", "webp"])
+            if image:
+                image = Image.open(image)
+                st.image(image, caption="Uploaded Image", use_column_width=True)
+            with st.expander(
+                "📚 Advanced",
+                expanded=False,
+            ):
+                uid = st.text_input("Specify an UID", value="-1")
+                secret_key = st.text_input("Enter secret key", value="")
+                seed = st.text_input("Seed", value="-1")
+            # The Big Red "Submit" Button!
+            submitted = st.form_submit_button(
+                "Submit", type="primary", use_container_width=True
+            )
+
+        return (
+            submitted,
+            prompt,
+            uid,
+            secret_key,
+            seed,
+            image,
+            mode
+        )
 
 
-async def call_niche_api(url, data) -> List[Image.Image]:
-    try:
-        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(64)) as session:
-            async with session.post(url, json=data) as response:
-                response = await response.json()
-            response = response["image"]
-        return base64_to_image(response)
-    except Exception as e:
-        print(e)
-        return None
-
-
-async def get_output(url, datas):
-    tasks = [asyncio.create_task(call_niche_api(url, data)) for data in datas]
-    return await asyncio.gather(*tasks)
-
-
-def main_page(
+def main_page_sticker_maker(
     submitted: bool,
     model_name: str,
     prompt: str,
-    negative_prompt: str,
-    aspect_ratio: str,
-    num_images: int,
-    uid: str,
-    secret_key: str,
-    seed: str,
-    conditional_image: str,
-    controlnet_conditioning_scale: list,
-    pipeline_type: str,
     api_token: str,
     generated_images_placeholder,
+    image,
+    mode,
 ) -> None:
     """Main page layout and logic for generating images.
 
@@ -137,19 +151,6 @@ def main_page(
         negative_prompt (str): Text prompt for elements to avoid in the image.
     """
     if submitted:
-        if secret_key != api_token and uid != "-1":
-            st.error("Invalid secret key")
-            return
-        try:
-            uid = int(uid)
-        except ValueError:
-            uid = -1
-        width, height = model_config[model_name]["ratio"][aspect_ratio.lower()]
-        width = int(width)
-        height = int(height)
-        num_inference_steps = model_config[model_name]["num_inference_steps"]
-        guidance_scale = model_config[model_name]["guidance_scale"]
-
         with st.status(
             "👩🏾‍🍳 Whipping up your words into art...", expanded=True
         ) as status:
@@ -158,39 +159,27 @@ def main_page(
                 if submitted:
                     start_time = time.time()
                     # Calling the replicate API to get the image
+                    # convert image to jpg compressed format
+                    import io
+                    image = image.convert("RGB")
+                    image_data = io.BytesIO()
+                    image.save(image_data, format="JPEG")
+                    base64_image = pil_image_to_base64(image)
                     with generated_images_placeholder.container():
-                        try:
-                            seed = int(seed)
-                        except ValueError:
-                            seed = -1
-                        if seed >= 0:
-                            seeds = [int(seed) + i for i in range(num_images)]
-                        else:
-                            seeds = [random.randint(0, 1e9) for _ in range(num_images)]
                         all_images = []  # List to store all generated images
                         data = {
                             "key": api_token,
                             "prompt": prompt,  # prompt
                             "model_name": model_name,  # See avaialble models in https://github.com/NicheTensor/NicheImage/blob/main/configs/model_config.yaml
-                            "seed": seed,  # -1 means random seed
+                            "seed": 0,  # -1 means random seed
                             "miner_uid": int(
-                                uid
+                                -1
                             ),  # specify miner uid, -1 means random miner selected by validator
-                            "pipeline_type": pipeline_type,
-                            "conditional_image": conditional_image,
-                            "pipeline_params": {  # params feed to diffusers pipeline, see all params here https://huggingface.co/docs/diffusers/api/pipelines/stable_diffusion/text2img#diffusers.StableDiffusionPipeline.__call__
-                                "width": width,
-                                "height": height,
-                                "num_inference_steps": num_inference_steps,
-                                "guidance_scale": guidance_scale,
-                                "negative_prompt": negative_prompt,
-                                "controlnet_conditioning_scale": controlnet_conditioning_scale,
-                                "clip_skip": model_config[model_name]["clip_skip"],
-                            },
+                            "pipeline_type": "img2img",
+                            "conditional_image": base64_image,
+                            "pipeline_params": {"style": mode},
                         }
-                        duplicate_data = [data.copy() for _ in range(num_images)]
-                        for i, d in enumerate(duplicate_data):
-                            d["seed"] = seeds[i]
+                        duplicate_data = [data.copy() for _ in range(4)]
                         # Call the NicheImage API
                         loop = get_or_create_eventloop()
                         asyncio.set_event_loop(loop)
@@ -200,11 +189,12 @@ def main_page(
                                 duplicate_data,
                             )
                         )
+                        print(output)
                         while len(output) < 4:
                             output.append(None)
                         for i, image in enumerate(output):
                             if not image:
-                                output[i] = Image.new("RGB", (width, height), (0, 0, 0))
+                                output[i] = Image.new("RGB", (512, 512), (0, 0, 0))
                         print(output)
                         if output:
                             st.toast("Your image has been generated!", icon="😍")
@@ -278,3 +268,41 @@ def main_page(
     # If not submitted, chill here 🍹
     else:
         pass
+
+
+def main():
+    """
+    Main function to run the Streamlit application.
+
+    This function initializes the sidebar configuration and the main page layout.
+    It retrieves the user inputs from the sidebar, and passes them to the main page function.
+    The main page function then generates images based on these inputs.
+    """
+    (
+        submitted,
+        prompt,
+        uid,
+        secret_key,
+        seed,
+        image,
+        mode
+    ) = configure_sidebar()
+    main_page_sticker_maker(
+        submitted,
+        "FaceToMany",
+        prompt,
+        API_TOKEN,
+        generated_images_placeholder,
+        image,
+        mode
+    )
+    if not submitted:
+        with generated_images_placeholder.container():
+            st.image(
+                "https://img.midjourneyapi.xyz/mj/a4a88dfe-4e68-4ff3-8ab1-85a4c2ee5792.png",
+                use_column_width=True,
+            )
+
+
+if __name__ == "__main__":
+    main()
