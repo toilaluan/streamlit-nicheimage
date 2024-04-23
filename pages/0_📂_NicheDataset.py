@@ -42,7 +42,7 @@ with tabs[0]:
 
 with tabs[1]:
     st.title("📚 NicheText Database")
-    model_name = st.selectbox("Select Model", ["Gemma7b"])
+    model_name = st.selectbox("Select Model", ["Gemma7b", "Llama3_70b])
     query = {"metadata.model_name": model_name}
 
     cursor = text_collection.find(query, limit=48)
