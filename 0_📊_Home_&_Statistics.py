@@ -22,10 +22,6 @@ if "stats" not in st.session_state:
 else:
     response = st.session_state.stats
 
-st.write(":blue[**Validator Version**]")
-validator_version = {int(k): v.get("version", "0.1.0") for k, v in response.items()}
-st.dataframe(pd.DataFrame(validator_version.items(), columns=["Validator", "Version"]))
-
 all_validator_response = response
 validator_uids = list(all_validator_response.keys())
 validator_uids = [int(uid) for uid in validator_uids]
