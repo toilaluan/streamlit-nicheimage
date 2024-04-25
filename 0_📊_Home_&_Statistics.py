@@ -20,7 +20,7 @@ if "stats" not in st.session_state:
     response = response.json()
     st.session_state.stats = response
 
-all_validator_response = response
+all_validator_response = st.session_state.stats
 validator_uids = list(all_validator_response.keys())
 validator_uids = [int(uid) for uid in validator_uids]
 tabs = st.tabs
