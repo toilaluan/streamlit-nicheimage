@@ -15,7 +15,12 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-if "stats" not in st.session_state or st.button("Reload"):
+if "stats" not in st.session_state:
+    response = requests.get("http://nichestorage.nichetensor.com:10000/get_miner_info")
+    response = response.json()
+    st.session_state.stats = response
+
+if st.button("Reload"):
     response = requests.get("http://nichestorage.nichetensor.com:10000/get_miner_info")
     response = response.json()
     st.session_state.stats = response
