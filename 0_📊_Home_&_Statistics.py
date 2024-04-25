@@ -15,14 +15,12 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-if "stats" not in st.session_state:
+if "stats" not in st.session_state or st.button("Reload"):
     response = requests.get("http://nichestorage.nichetensor.com:10000/get_miner_info")
     response = response.json()
     st.session_state.stats = response
-else:
-    response = st.session_state.stats
 
-all_validator_response = response
+all_validator_response = st.session_state.stats
 validator_uids = list(all_validator_response.keys())
 validator_uids = [int(uid) for uid in validator_uids]
 tabs = st.tabs
