@@ -41,15 +41,46 @@ def get_or_create_eventloop():
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             return asyncio.get_event_loop()
+# convert this config to dict
+# 1:1 (square): 512x512, 768x768
+# 3:2 (landscape): 768x512
+# 2:3 (portrait): 512x768
+# 4:3 (landscape): 768x576
+# 3:4 (portrait): 576x768
+# 16:9 (widescreen): 912x512
+# 9:16 (tall): 512x912
 
+sd_ratio_to_size = {
+    "1:1": (512, 512),
+    "3:2": (768, 512),
+    "2:3": (512, 768),
+    "4:3": (768, 576),
+    "3:4": (576, 768),
+    "16:9": (912, 512),
+    "9:16": (512, 912),
+}
+
+# 1:1 (square): 1024x1024, 768x768
+# 3:2 (landscape): 1152x768
+# 2:3 (portrait): 768x1152
+# 4:3 (landscape): 1152x864
+# 3:4 (portrait): 864x1152
+# 16:9 (widescreen): 1360x768
+# 9:16 (tall): 768x1360
+
+sdxl_ratio_to_size = {
+    "1:1": (1024, 1024),
+    "3:2": (1152, 768),
+    "2:3": (768, 1152),
+    "4:3": (1152, 864),
+    "3:4": (864, 1152),
+    "16:9": (1360, 768),
+    "9:16": (768, 1360),
+}
 
 model_config = {
     "RealisticVision": {
-        "ratio": {
-            "square": (512, 512),
-            "tall": (512, 768),
-            "wide": (768, 512),
-        },
+        "ratio": sd_ratio_to_size,
         "num_inference_steps": 30,
         "guidance_scale": 7.0,
         "clip_skip": 2,
@@ -58,31 +89,19 @@ model_config = {
         "num_inference_steps": 25,
         "guidance_scale": 7,
         "clip_skip": 2,
-        "ratio": {
-            "square": (1024, 1024),
-            "tall": (832, 1216),
-            "wide": (1344, 768),
-        },
+        "ratio_type": sdxl_ratio_to_size
     },
     "DreamShaper": {
         "num_inference_steps": 35,
         "guidance_scale": 7,
         "clip_skip": 2,
-        "ratio": {
-            "square": (512, 512),
-            "tall": (512, 768),
-            "wide": (768, 512),
-        },
+        "ratio": sd_ratio_to_size,
     },
     "RealitiesEdgeXL": {
         "num_inference_steps": 7,
         "guidance_scale": 7,
-        "clip_skip": 2,
-        "ratio": {
-            "square": (1024, 1024),
-            "tall": (832, 1216),
-            "wide": (1344, 768),
-        },
+        "clip_skip": 1,
+        "ratio": sdxl_ratio_to_size,
     },
 }
 

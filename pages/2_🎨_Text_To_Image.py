@@ -103,7 +103,7 @@ def configure_sidebar() -> None:
                 value="cinematic still of a shiba inu, fluffy neck, wearing a suit of ornate metal armor",
             )
             aspect_ratio = st.selectbox(
-                ":blue[**Aspect Ratio**]", options=["Tall", "Wide", "Square"]
+                ":blue[**Aspect Ratio**]", options=["1:1", "3:2", "2:3", "4:3", "3:4", "16:9", "9:16"]
             )
             num_images = 4
             negative_prompt = st.text_area(
