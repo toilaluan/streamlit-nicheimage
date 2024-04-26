@@ -60,8 +60,8 @@ model_config = {
         "clip_skip": 2,
         "ratio": {
             "square": (1024, 1024),
-            "tall": (672, 1024),
-            "wide": (1024, 672),
+            "tall": (832, 1216),
+            "wide": (1344, 768),
         },
     },
     "DreamShaper": {
@@ -80,8 +80,8 @@ model_config = {
         "clip_skip": 2,
         "ratio": {
             "square": (1024, 1024),
-            "tall": (672, 1024),
-            "wide": (1024, 672),
+            "tall": (832, 1216),
+            "wide": (1344, 768),
         },
     },
 }
