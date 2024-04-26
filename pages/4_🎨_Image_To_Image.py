@@ -99,7 +99,7 @@ def configure_sidebar() -> None:
             # aspect_ratio = st.selectbox(
             #     ":blue[**Aspect Ratio**]", options=["Tall", "Wide", "Square"]
             # )
-            aspect_ratio = "Square"
+            aspect_ratio = "1:1"
             conditional_image = st.file_uploader(
                 ":blue[**Upload your image**]",
                 type=["png", "jpg", "jpeg"],
