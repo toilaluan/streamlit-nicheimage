@@ -1,11 +1,25 @@
 import streamlit as st
 from pymongo import MongoClient
 import pandas as pd
+from PIL import Image
+import io
+import requests
 
 MONGO_DB_HOST = st.secrets["MONGO_DB_HOST"]
 MONGO_DB_PORT = st.secrets["MONGO_DB_PORT"]
 MONGO_DB_USER = st.secrets["MONGO_DB_USER"]
 MONGO_DB_PASS = st.secrets["MONGO_DB_PASS"]
+
+def get_image(key):
+    def base64_to_pil_image(base64_image):
+        image = Image.open(io.BytesIO(base64_image))
+        return image
+    response = requests.get(f"http://nichestorage.nichetensor.com:10000/get_image/{key}")
+    response = response.json()
+    image = response["image"]
+    image = base64_to_pil_image(image)
+    return image
+    
 
 mongo_client = MongoClient(
     "mongodb://%s:%s@%s:%s"
@@ -34,9 +48,9 @@ with tabs[0]:
     for image in cursor:
         bucket_name = image["bucket"]
         object_key = image.get("jpg_key", image["key"])
-        image_url = f"http://{bucket_name}.s3.amazonaws.com/{object_key}"
+        pil_image = get_image(object_key)
         cols[count % n_row].image(
-            image_url, caption=image["prompt"], use_column_width=True
+            pil_image, caption=image["prompt"], use_column_width=True
         )
         count += 1
 
