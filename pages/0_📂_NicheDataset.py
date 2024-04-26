@@ -14,7 +14,7 @@ def get_image(key):
     def base64_to_pil_image(base64_image):
         image = Image.open(io.BytesIO(base64_image))
         return image
-    response = requests.get(f"http://nichestorage.nichetensor.com:10000/get_image/{key}")
+    response = requests.get(f"http://nichestorage.nichetensor.com:10000/get_image", params={"image_id": key})
     response = response.json()
     image = response["image"]
     image = base64_to_pil_image(image)
