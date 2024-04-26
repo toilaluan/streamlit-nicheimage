@@ -29,7 +29,7 @@ import plotly.express as px
 from common import set_page_container_style
 
 replicate_text = "NicheImage - Subnet 23 - Bittensor"
-replicate_logo = "assets/NicheTensorTransparent.png"
+replicate_logo = "https://nichetensor.com/wp-content/uploads/2024/04/cropped-NicheTensor_logo_transparent.png"
 replicate_link = "https://github.com/NicheTensor/NicheImage"
 
 st.set_page_config(
@@ -278,9 +278,8 @@ def main():
     )
     if not submitted:
         with generated_images_placeholder.container():
-            st.image(
-                "https://img.midjourneyapi.xyz/mj/a4a88dfe-4e68-4ff3-8ab1-85a4c2ee5792.png",
-                use_column_width=True,
+            st.markdown(
+                "# Sticker Maker 🎨 - https://replicate.com/fofr/sticker-maker",
             )
 
 

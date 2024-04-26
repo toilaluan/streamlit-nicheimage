@@ -98,7 +98,7 @@ def configure_sidebar() -> None:
         with st.form("my_form"):
             prompt = st.text_area(
                 ":blue[**Enter prompt ✍🏾**]",
-                value="a beautiful flower under the sun --ar 16:9",
+                value="an image of izuku midoriya wearing a dark green t - shirt and baseball cap being served by a robot maid with large technics arms, by Range Murata, Katsuhiro Otomo, Yoshitaka Amano, and Artgerm. 3D shadowing effect, 8K resolution. --ar 4:5 --v 6",
             )
             with st.expander(
                 "📚 Advanced",
@@ -196,8 +196,8 @@ def main():
     if not submitted:
         with generated_images_placeholder.container():
             st.image(
-                "https://img.midjourneyapi.xyz/mj/a4a88dfe-4e68-4ff3-8ab1-85a4c2ee5792.png",
-                use_column_width=True,
+                "assets/mj_1.png",
+                use_column_width=False,
             )
 
 

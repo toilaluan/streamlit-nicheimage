@@ -27,7 +27,7 @@ import plotly.express as px
 from common import set_page_container_style
 
 replicate_text = "NicheImage - Subnet 23 - Bittensor"
-replicate_logo = "assets/NicheTensorTransparent.png"
+replicate_logo = "https://nichetensor.com/wp-content/uploads/2024/04/cropped-NicheTensor_logo_transparent.png"
 replicate_link = "https://github.com/NicheTensor/NicheImage"
 
 st.set_page_config(
