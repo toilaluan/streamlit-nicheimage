@@ -99,8 +99,8 @@ model_config = {
     },
     "RealitiesEdgeXL": {
         "num_inference_steps": 7,
-        "guidance_scale": 7,
-        "clip_skip": 1,
+        "guidance_scale": 1,
+        "clip_skip": 2,
         "ratio": sdxl_ratio_to_size,
     },
 }
