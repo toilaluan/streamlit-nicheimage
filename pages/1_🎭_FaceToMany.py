@@ -99,7 +99,7 @@ def configure_sidebar() -> None:
         with st.form("my_form"):
             prompt = st.text_area(
                 ":blue[**Enter prompt ✍🏾**]",
-                value="a beautiful flower under the sun --ar 16:9",
+                value="a person",
             )
             mode = st.selectbox("Style", ["3D", "Video game", "Emoji", "Pixels", "Clay", "Toy"])
             image = st.file_uploader("Upload an image", type=["jpg", "png", "jpeg", "webp"])
@@ -129,7 +129,7 @@ def configure_sidebar() -> None:
         )
 
 
-def main_page_sticker_maker(
+async def main_page_sticker_maker(
     submitted: bool,
     model_name: str,
     prompt: str,
@@ -183,59 +183,39 @@ def main_page_sticker_maker(
                         # Call the NicheImage API
                         loop = get_or_create_eventloop()
                         asyncio.set_event_loop(loop)
-                        output = loop.run_until_complete(
+                        tasks = [
                             get_output(
                                 "http://proxy_client_nicheimage.nichetensor.com:10003/generate",
-                                duplicate_data,
+                                [d],
                             )
-                        )
-                        print(output)
-                        while len(output) < 4:
-                            output.append(None)
-                        for i, image in enumerate(output):
-                            if not image:
-                                output[i] = Image.new("RGB", (512, 512), (0, 0, 0))
-                        print(output)
-                        if output:
-                            st.toast("Your image has been generated!", icon="😍")
-                            end_time = time.time()
-                            status.update(
-                                label=f"✅ Images generated in {round(end_time-start_time, 3)} seconds",
-                                state="complete",
-                                expanded=False,
-                            )
-
-                            # Save generated image to session state
-                            st.session_state.generated_image = output
-                            captions = [f"Image {i+1} 🎈" for i in range(4)]
-                            all_images = []
-                            # Displaying the image
-                            _, main_col, _ = st.columns([0.15, 0.7, 0.15])
-                            with main_col:
-                                cols_1 = st.columns(2)
-                                cols_2 = st.columns(2)
-                                with st.container(border=True):
-                                    for i, image in enumerate(
-                                        st.session_state.generated_image[:2]
-                                    ):
-                                        cols_1[i].image(
-                                            image,
-                                            caption=captions[i],
-                                            use_column_width=True,
-                                            output_format="PNG",
-                                        )
-                                        # Add image to the list
-                                        all_images.append(image)
-                                    for i, image in enumerate(
-                                        st.session_state.generated_image[2:]
-                                    ):
-                                        cols_2[i].image(
-                                            image,
-                                            caption=captions[i + 2],
-                                            use_column_width=True,
-                                            output_format="PNG",
-                                        )
-                                        all_images.append(image)
+                            for d in duplicate_data
+                        ]
+                        line_1, line_2 = st.columns(2)
+                        for i, task in enumerate(asyncio.as_completed(tasks)):
+                            
+                            output = await task
+                            if output:
+                                image = output[0]
+                            else:
+                                image = Image.new("RGB", (512, 512), (0, 0, 0))
+                            all_images.append(image)
+                            if i % 2 == 0:
+                                with line_1:
+                                    st.image(
+                                        image,
+                                        caption=f"Image {i+1} 🎈",
+                                        use_column_width=True,
+                                        output_format="JPEG",
+                                    )
+                            else:
+                                with line_2:
+                                    st.image(
+                                        image,
+                                        caption=f"Image {i+1} 🎈",
+                                        use_column_width=True,
+                                        output_format="JPEG",
+                                    )
+                        end_time = time.time()
 
                         # Save all generated images to session state
                         st.session_state.all_images = all_images
@@ -270,7 +250,7 @@ def main_page_sticker_maker(
         pass
 
 
-def main():
+async def main():
     """
     Main function to run the Streamlit application.
 
@@ -287,7 +267,7 @@ def main():
         image,
         mode
     ) = configure_sidebar()
-    main_page_sticker_maker(
+    await main_page_sticker_maker(
         submitted,
         "FaceToMany",
         prompt,
@@ -306,4 +286,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

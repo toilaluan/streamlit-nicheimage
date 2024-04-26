@@ -137,7 +137,7 @@ def configure_sidebar() -> None:
         )
 
 
-def main():
+async def main():
     """
     Main function to run the Streamlit application.
 
@@ -157,7 +157,7 @@ def main():
         seed,
         conditional_image,
     ) = configure_sidebar()
-    main_page(
+    await main_page(
         submitted,
         model_name,
         prompt,
@@ -243,4 +243,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
