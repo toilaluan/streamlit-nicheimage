@@ -3,6 +3,7 @@ from pymongo import MongoClient
 import pandas as pd
 from PIL import Image
 import io
+import base64
 import requests
 
 MONGO_DB_HOST = st.secrets["MONGO_DB_HOST"]
@@ -11,9 +12,10 @@ MONGO_DB_USER = st.secrets["MONGO_DB_USER"]
 MONGO_DB_PASS = st.secrets["MONGO_DB_PASS"]
 
 def get_image(key, bucket):
-    def base64_to_pil_image(base64_image):
-        image = Image.open(io.BytesIO(base64_image))
-        return image
+    def base64_to_pil_image(base64_image:str):
+        decoded_image = base64.b64decode(base64_image)
+        image_buffer = io.BytesIO(decoded_image)
+        return Image.open(image_buffer)
     response = requests.get(f"http://nichestorage.nichetensor.com:10000/get_image/{bucket}/{key}")
     response = response.json()
     image = response["image"]
