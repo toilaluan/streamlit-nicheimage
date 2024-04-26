@@ -10,11 +10,11 @@ MONGO_DB_PORT = st.secrets["MONGO_DB_PORT"]
 MONGO_DB_USER = st.secrets["MONGO_DB_USER"]
 MONGO_DB_PASS = st.secrets["MONGO_DB_PASS"]
 
-def get_image(key):
+def get_image(key, bucket):
     def base64_to_pil_image(base64_image):
         image = Image.open(io.BytesIO(base64_image))
         return image
-    response = requests.get(f"http://nichestorage.nichetensor.com:10000/get_image", params={"image_id": key})
+    response = requests.get(f"http://nichestorage.nichetensor.com:10000/get_image/{bucket}/{key}")
     response = response.json()
     image = response["image"]
     image = base64_to_pil_image(image)
@@ -48,7 +48,7 @@ with tabs[0]:
     for image in cursor:
         bucket_name = image["bucket"]
         object_key = image.get("jpg_key", image["key"])
-        pil_image = get_image(object_key)
+        pil_image = get_image(object_key, bucket_name)
         cols[count % n_row].image(
             pil_image, caption=image["prompt"], use_column_width=True
         )
