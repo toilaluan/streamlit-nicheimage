@@ -89,7 +89,7 @@ model_config = {
         "num_inference_steps": 25,
         "guidance_scale": 7,
         "clip_skip": 2,
-        "ratio_type": sdxl_ratio_to_size
+        "ratio": sdxl_ratio_to_size
     },
     "DreamShaper": {
         "num_inference_steps": 35,
