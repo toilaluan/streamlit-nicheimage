@@ -197,7 +197,7 @@ def main():
         with generated_images_placeholder.container():
             st.image(
                 "assets/mj_1.png",
-                use_column_width=False,
+                use_column_width=True,
             )
 
 
