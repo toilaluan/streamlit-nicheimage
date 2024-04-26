@@ -5,7 +5,7 @@ import pandas as pd
 
 st.set_page_config(page_title="NicheImage Studio", layout="wide")
 st.markdown("## :blue[Image Generation Studio by NicheImage]")
-replicate_logo = "assets/NicheTensorTransparent.png"
+replicate_logo = "https://nichetensor.com/wp-content/uploads/2024/04/cropped-NicheTensor_logo_transparent.png"
 
 with st.sidebar:
     st.image(replicate_logo, use_column_width=True)
