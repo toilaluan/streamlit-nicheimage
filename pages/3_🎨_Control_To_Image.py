@@ -96,7 +96,7 @@ def configure_sidebar() -> None:
                 ":blue[**Enter prompt ✍🏾**]",
                 value="cinematic still of a shiba inu, fluffy neck, wearing a suit of ornate metal armor",
             )
-            aspect_ratio = "Square"
+            aspect_ratio = "1:1"
             conditional_image = st.file_uploader(
                 ":blue[**Upload your image**]",
                 type=["png", "jpg", "jpeg"],
