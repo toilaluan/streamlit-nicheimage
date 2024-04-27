@@ -92,10 +92,10 @@ def configure_sidebar() -> None:
             model_name = st.selectbox(
                 ":blue[**Select Model**]",
                 options=[
-                    "RealisticVision",
                     "AnimeV3",
-                    "DreamShaper",
                     "RealitiesEdgeXL",
+                    "RealisticVision",
+                    "DreamShaper",
                 ],
             )
             prompt = st.text_area(
