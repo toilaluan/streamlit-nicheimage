@@ -62,11 +62,12 @@ transformed_dict = pd.DataFrame(transformed_dict)
 for model in model_distribution.keys():
     model_data = transformed_dict[transformed_dict["model_name"] == model]
     model_data = model_data.sort_values(by="mean_score", ascending=False)
+    model_data.uid = model_data.uid.astype(str)
     if model_data.mean_score.sum() == 0:
         continue
     st.write(f"Model: {model}")
     fig = go.Figure(data=[go.Bar(x=model_data.uid, y=model_data.mean_score,
-            hovertext=[f"Total volume {volume}" for volume in model_data.total_volume], marker_color='rgb(55, 83, 109)')])
+            hovertext=[f"Total volume {volume}" for volume in model_data.total_volume], marker_color='lightsalmon')])
     fig.update_layout(title_text=f"Model: {model} Mean Score Distribution", xaxis_title="UID", yaxis_title="Mean Score")
     st.plotly_chart(fig)
 pd_data = pd.DataFrame(response["info"])
