@@ -70,12 +70,7 @@ for model in model_distribution.keys():
     fig.update_layout(title_text=f"Model: {model}", xaxis_title="UID", yaxis_title="Mean Score")
     
     fig.update_layout(
-        xaxis=dict(
-            tickmode='array',
-            tickvals=model_data.uid,
-            categoryorder='array',
-            categoryarray=model_data.uid
-        )
+        xaxis=dict(type="category", categoryorder='category ascending')
     )
     st.plotly_chart(fig)
 pd_data = pd.DataFrame(response["info"])
