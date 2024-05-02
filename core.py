@@ -132,14 +132,12 @@ async def call_niche_api(url, data) -> List[Image.Image]:
                 response = response["image"]
             else:
                 response = response
-        try:
-            image = base64_to_image(response)
-        except:
-            image = Image.new("RGB", (512,512))
+        image = base64_to_image(response)
         return image
     except Exception as e:
         print(e)
-        return None
+        image = Image.new("RGB", (512,512))
+        return image
 
 
 async def get_output(url, datas):
