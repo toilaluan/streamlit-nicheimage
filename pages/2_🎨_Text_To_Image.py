@@ -94,6 +94,8 @@ def configure_sidebar() -> None:
                 options=[
                     "AnimeV3",
                     "RealitiesEdgeXL",
+                    "DreamShaperXL",
+                    "JuggernautXL",
                     "RealisticVision",
                     "DreamShaper",
                 ],
