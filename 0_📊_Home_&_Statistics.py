@@ -2,6 +2,8 @@ import streamlit as st
 import requests
 import plotly.express as px
 import pandas as pd
+import plotly.graph_objects as go
+
 
 st.set_page_config(page_title="NicheImage Studio", layout="wide")
 st.markdown("## :blue[Image Generation Studio by NicheImage]")
@@ -52,6 +54,7 @@ for k, v in response["info"].items():
             "mean_score": (
                 sum(v["scores"]) / (len(v["scores"])) if len(v["scores"]) > 0 else 0
             ),
+            "total_volume": v["total_volume"],
         }
     )
 transformed_dict = pd.DataFrame(transformed_dict)
@@ -62,9 +65,10 @@ for model in model_distribution.keys():
     if model_data.mean_score.sum() == 0:
         continue
     st.write(f"Model: {model}")
-    # sort by mean score
-    model_data = model_data.sort_values(by="mean_score", ascending=False)
-    st.bar_chart(model_data[["uid", "mean_score"]].set_index("uid"))
+    fig = go.Figure(data=[go.Bar(x=model_data.uid, y=model_data.mean_score,
+            hovertext=[f"Total volume {volume}" for volume in model_data.total_volume], marker_color='rgb(55, 83, 109)')])
+    fig.update_layout(title_text=f"Model: {model} Mean Score Distribution", xaxis_title="UID", yaxis_title="Mean Score")
+    st.plotly_chart(fig)
 pd_data = pd.DataFrame(response["info"])
 st.markdown(
     """
