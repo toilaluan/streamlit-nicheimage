@@ -42,12 +42,14 @@ with tabs[0]:
     )
     query = {"model_name": model_name}
 
-    cursor = image_collection.find(query, limit=32)
+    cursor = image_collection.find(query, limit=64)
     cursor.sort("_id", -1)
     n_row = 2
     count = 0
     cols = st.columns(n_row)
     for image in cursor:
+        if image.get("pipeline_type", "txt2img") != "txt2img":
+            continue
         bucket_name = image["bucket"]
         object_key = image.get("jpg_key", image["key"])
         pil_image = get_image(object_key, bucket_name)
