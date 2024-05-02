@@ -62,6 +62,8 @@ for model in model_distribution.keys():
     if model_data.mean_score.sum() == 0:
         continue
     st.write(f"Model: {model}")
+    # sort by mean score
+    model_data = model_data.sort_values(by="mean_score", ascending=False)
     st.bar_chart(model_data[["uid", "mean_score"]].set_index("uid"))
 pd_data = pd.DataFrame(response["info"])
 st.markdown(
