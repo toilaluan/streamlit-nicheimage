@@ -18,6 +18,7 @@ from PIL import Image
 import random
 import time
 import base64
+from PIL import Image
 from typing import List
 import aiohttp
 import asyncio
@@ -131,7 +132,11 @@ async def call_niche_api(url, data) -> List[Image.Image]:
                 response = response["image"]
             else:
                 response = response
-        return base64_to_image(response)
+        try:
+            image = base64_to_image(response)
+        except:
+            image = Image.new("RGB", (512,512))
+        return image
     except Exception as e:
         print(e)
         return None
