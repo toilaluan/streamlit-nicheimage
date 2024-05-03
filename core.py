@@ -107,13 +107,11 @@ model_config = {
     "DreamShaperXL": {
         "num_inference_steps": 8,
         "guidance_scale": 2,
-        "clip_skip": 2,
         "ratio": sdxl_ratio_to_size
     },
     "JuggernautXL": {
         "num_inference_steps": 25,
         "guidance_scale": 7,
-        "clip_skip": 2,
         "ratio": sdxl_ratio_to_size
     },
 }
