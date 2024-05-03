@@ -90,7 +90,7 @@ def configure_sidebar() -> None:
         with st.form("my_form"):
             model_name = st.selectbox(
                 ":blue[**Select Model**]",
-                options=["DreamShaper"],
+                options=["DreamShaperXL"],
             )
             prompt = st.text_area(
                 ":blue[**Enter prompt ✍🏾**]",

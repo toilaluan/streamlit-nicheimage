@@ -158,6 +158,7 @@ async def main_page(
     pipeline_type: str,
     api_token: str,
     generated_images_placeholder,
+    ip_adapter_scale: float = 1.0,
 ) -> None:
     """Main page layout and logic for generating images.
 
@@ -220,6 +221,7 @@ async def main_page(
                                 "guidance_scale": guidance_scale,
                                 "negative_prompt": negative_prompt,
                                 "controlnet_conditioning_scale": controlnet_conditioning_scale,
+                                "ip_adapter_scale": ip_adapter_scale,
                             },
                         }
                         duplicate_data = [data.copy() for _ in range(num_images)]

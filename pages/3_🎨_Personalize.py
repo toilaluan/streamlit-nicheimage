@@ -90,50 +90,38 @@ def configure_sidebar() -> None:
         with st.form("my_form"):
             model_name = st.selectbox(
                 ":blue[**Select Model**]",
-                options=["DreamShaper"],
+                options=["DreamShaperXL"],
             )
             prompt = st.text_area(
                 ":blue[**Enter prompt ✍🏾**]",
-                value="cinematic still of a shiba inu, fluffy neck, wearing a suit of ornate metal armor",
+                value="Studio Ghibli, soft colors, whimsical style, hand-drawn, highly detailed",
             )
             aspect_ratio = "1:1"
             conditional_image = st.file_uploader(
-                ":blue[**Upload your image**]",
+                ":blue[**Upload your image that contains face**]",
                 type=["png", "jpg", "jpeg"],
                 help="Upload an image to condition the generation",
             )
             if conditional_image:
                 st.image(conditional_image)
-            with st.container(border=True):
-                canny_strength = st.slider(
-                    ":blue[**Canny Strength**]",
-                    min_value=0.0,
-                    max_value=1.0,
-                    value=0.5,
-                    step=0.01,
-                    help="Strength of the Canny ControlNet",
-                )
-                depth_strength = st.slider(
-                    ":blue[**Depth Strength**]",
-                    min_value=0.0,
-                    max_value=1.0,
-                    value=0.5,
-                    step=0.01,
-                    help="Strength of the Depth ControlNet",
-                )
-                mlsd_strength = st.slider(
-                    ":blue[**MLSD Strength**]",
-                    min_value=0.0,
-                    max_value=1.0,
-                    value=0.5,
-                    step=0.01,
-                    help="Strength of the MLSD ControlNet",
-                )
-                controlnet_conditioning_scale = [
-                    canny_strength,
-                    depth_strength,
-                    mlsd_strength,
-                ]
+            
+            ip_adapter_scale = st.slider(
+                ":blue[**IP Adapter Scale**]",
+                min_value=0.0,
+                max_value=1.0,
+                value=0.8,
+                step=0.1,
+                help="The scale of the IP Adapter",
+            )
+
+            controlnet_scale = st.slider(
+                ":blue[**ControlNet Scale**]",
+                min_value=0.0,
+                max_value=1.0,
+                value=0.8,
+                step=0.1,
+                help="The scale of the ControlNet",
+            )
 
             num_images = 4
             negative_prompt = st.text_area(
@@ -164,7 +152,8 @@ def configure_sidebar() -> None:
             secret_key,
             seed,
             conditional_image,
-            controlnet_conditioning_scale,
+            ip_adapter_scale,
+            controlnet_scale,
         )
 
 
@@ -187,7 +176,8 @@ async def main():
         secret_key,
         seed,
         conditional_image,
-        controlnet_conditioning_scale,
+        ip_adapter_scale,
+        controlnet_scale,
     ) = configure_sidebar()
     if conditional_image:
         conditional_image = Image.open(conditional_image)
@@ -203,10 +193,11 @@ async def main():
         secret_key,
         seed,
         conditional_image,
-        controlnet_conditioning_scale,
+        controlnet_scale,
         "controlnet_txt2img",
         API_TOKEN,
         generated_images_placeholder,
+        ip_adapter_scale,
     )
     if not submitted:
         with generated_images_placeholder.container():
