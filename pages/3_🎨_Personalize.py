@@ -102,8 +102,16 @@ def configure_sidebar() -> None:
                 type=["png", "jpg", "jpeg"],
                 help="Upload an image to condition the generation",
             )
+            pose_image = st.file_uploader(
+                ":blue[**Upload your image that contains pose**]",
+                type=["png", "jpg", "jpeg"],
+                help="Upload an image to condition the generation",
+            )
+
             if conditional_image:
                 st.image(conditional_image)
+            if pose_image:
+                st.image(pose_image)
             
             ip_adapter_scale = st.slider(
                 ":blue[**IP Adapter Scale**]",
@@ -154,6 +162,7 @@ def configure_sidebar() -> None:
             conditional_image,
             ip_adapter_scale,
             controlnet_scale,
+            pose_image
         )
 
 
@@ -178,10 +187,13 @@ async def main():
         conditional_image,
         ip_adapter_scale,
         controlnet_scale,
+        pose_image
     ) = configure_sidebar()
     if conditional_image:
         conditional_image = Image.open(conditional_image)
         conditional_image = pil_image_to_base64(conditional_image)
+    if pose_image:
+        pose_image = pil_image_to_base64(Image.open(pose_image))
     await main_page(
         submitted,
         model_name,
@@ -198,6 +210,7 @@ async def main():
         API_TOKEN,
         generated_images_placeholder,
         ip_adapter_scale,
+        pose_image
     )
     if not submitted:
         with generated_images_placeholder.container():
