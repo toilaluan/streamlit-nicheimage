@@ -194,7 +194,7 @@ async def main():
         seed,
         conditional_image,
         controlnet_scale,
-        "controlnet_txt2img",
+        "instantid",
         API_TOKEN,
         generated_images_placeholder,
         ip_adapter_scale,
