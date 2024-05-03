@@ -214,44 +214,9 @@ async def main():
     )
     if not submitted:
         with generated_images_placeholder.container():
-            st.info("🎨 :blue[**Canny Edge**]")
-            cols = st.columns(2)
-            with cols[0]:
-                st.image(
-                    "https://huggingface.co/takuma104/controlnet_dev/resolve/main/gen_compare/control_images/converted/control_bird_canny.png",
-                    use_column_width=True,
-                )
-            with cols[1]:
-                st.image(
-                    "https://cdn-lfs.huggingface.co/repos/f4/f7/f4f7a7f70b5d098c5f2b46c19c2063eea26d6eba1488e9141804f6402b509cbb/3907d804ef04bcc1dd998ddb8dbd01ad6ffd071d6f13bd2e8a03936f7fe35f13?response-content-disposition=inline%3B+filename*%3DUTF-8%27%27output_bird_canny_1.png%3B+filename%3D%22output_bird_canny_1.png%22%3B&response-content-type=image%2Fpng&Expires=1709913845&Policy=eyJTdGF0ZW1lbnQiOlt7IkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTcwOTkxMzg0NX19LCJSZXNvdXJjZSI6Imh0dHBzOi8vY2RuLWxmcy5odWdnaW5nZmFjZS5jby9yZXBvcy9mNC9mNy9mNGY3YTdmNzBiNWQwOThjNWYyYjQ2YzE5YzIwNjNlZWEyNmQ2ZWJhMTQ4OGU5MTQxODA0ZjY0MDJiNTA5Y2JiLzM5MDdkODA0ZWYwNGJjYzFkZDk5OGRkYjhkYmQwMWFkNmZmZDA3MWQ2ZjEzYmQyZThhMDM5MzZmN2ZlMzVmMTM%7EcmVzcG9uc2UtY29udGVudC1kaXNwb3NpdGlvbj0qJnJlc3BvbnNlLWNvbnRlbnQtdHlwZT0qIn1dfQ__&Signature=JplN20XzO7Y34tz-FkA3-cv4VRfIkzz9Tf8-Re7EdW-7%7EaBEItVnl5SDX44oSk-WeNFPfhcHg-b7RK1zlD6H1n3Zo7Y8JtMR1Z07%7ElZ6S6s80j1vpOrMmnkyB-7DcM9Mvi2ITDPXhOdYGnAK1GER1Zdg-ctVEkf7frNEj%7E5zcqJ1kFyRCJcjPHtgAtIAySOANk6BIZEWLEbZGM3b4swTMnNPUZZw5CYRp2dgGgVEo8i6xalR1l8rqvAxQ3yB4C5nfJURcqQLY1lkk9B58dhR6Afy5ZG-krqilv07R7HqbsS7GWq6w8BCEXA0E9cjQTqzqlpCZG0wH78vNE8GDdF6kQ__&Key-Pair-Id=KVTP0A1DKRTAX",
-                    use_column_width=True,
-                )
-            st.info("🎨 :blue[**Depth Map**]")
-            cols2 = st.columns(2)
-            with st.container():
-                with cols2[0]:
-                    st.image(
-                        "https://huggingface.co/takuma104/controlnet_dev/resolve/main/gen_compare/control_images/converted/control_vermeer_depth.png",
-                        use_column_width=True,
-                    )
-                with cols2[1]:
-                    st.image(
-                        "https://cdn-lfs.huggingface.co/repos/f4/f7/f4f7a7f70b5d098c5f2b46c19c2063eea26d6eba1488e9141804f6402b509cbb/25c89f31165aa3c435b28deeb1e542c68b0dab496727403c1f3c7ded3b78fdd1?response-content-disposition=inline%3B+filename*%3DUTF-8%27%27output_vermeer_depth_2.png%3B+filename%3D%22output_vermeer_depth_2.png%22%3B&response-content-type=image%2Fpng&Expires=1709913950&Policy=eyJTdGF0ZW1lbnQiOlt7IkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTcwOTkxMzk1MH19LCJSZXNvdXJjZSI6Imh0dHBzOi8vY2RuLWxmcy5odWdnaW5nZmFjZS5jby9yZXBvcy9mNC9mNy9mNGY3YTdmNzBiNWQwOThjNWYyYjQ2YzE5YzIwNjNlZWEyNmQ2ZWJhMTQ4OGU5MTQxODA0ZjY0MDJiNTA5Y2JiLzI1Yzg5ZjMxMTY1YWEzYzQzNWIyOGRlZWIxZTU0MmM2OGIwZGFiNDk2NzI3NDAzYzFmM2M3ZGVkM2I3OGZkZDE%7EcmVzcG9uc2UtY29udGVudC1kaXNwb3NpdGlvbj0qJnJlc3BvbnNlLWNvbnRlbnQtdHlwZT0qIn1dfQ__&Signature=b%7EhyTb-HRh2shXtGNEfhNrXU%7EsuQdyE0iTXVKpR76CDxlS147%7EYxiU%7E9JJAL1asz-vfUS5u%7ErtqIRfGkKAcU1DP8lqtGhIfDBi6iPNEyWoAWAGj7mF6y50qj7xeq2Iz4yWeHoiZpzotiWbMqCE6V6QKrHsaU2btHlHjlLsw4owh3ELXjHB6%7ENCKwH0uKLfABOBZzrOJOCilJU8VwiCRsk3QryLD3uywZMGDxyzd1vxnaBR4PTIrZ46FEatcXCpGdZ1ZJngtdiepdLRX4tI41gVk0fWYrQ5wOnMSudCQuCfVXvHRnoPwKUVcmF5mCa7smZykizITEmwg3ctW4W80pBA__&Key-Pair-Id=KVTP0A1DKRTAX",
-                        use_column_width=True,
-                    )
-            st.info("🎨 :blue[**MLSD**]")
-            cols3 = st.columns(2)
-            with st.container():
-                with cols3[0]:
-                    st.image(
-                        "https://huggingface.co/takuma104/controlnet_dev/resolve/main/gen_compare/control_images/converted/control_room_mlsd.png",
-                        use_column_width=True,
-                    )
-                with cols3[1]:
-                    st.image(
-                        "https://cdn-lfs.huggingface.co/repos/f4/f7/f4f7a7f70b5d098c5f2b46c19c2063eea26d6eba1488e9141804f6402b509cbb/92c95cf788f547ef7ea2da0fb45a0232864899ddd93c8f04d88b04f681216ad3?response-content-disposition=inline%3B+filename*%3DUTF-8%27%27output_room_mlsd_0.png%3B+filename%3D%22output_room_mlsd_0.png%22%3B&response-content-type=image%2Fpng&Expires=1709912870&Policy=eyJTdGF0ZW1lbnQiOlt7IkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTcwOTkxMjg3MH19LCJSZXNvdXJjZSI6Imh0dHBzOi8vY2RuLWxmcy5odWdnaW5nZmFjZS5jby9yZXBvcy9mNC9mNy9mNGY3YTdmNzBiNWQwOThjNWYyYjQ2YzE5YzIwNjNlZWEyNmQ2ZWJhMTQ4OGU5MTQxODA0ZjY0MDJiNTA5Y2JiLzkyYzk1Y2Y3ODhmNTQ3ZWY3ZWEyZGEwZmI0NWEwMjMyODY0ODk5ZGRkOTNjOGYwNGQ4OGIwNGY2ODEyMTZhZDM%7EcmVzcG9uc2UtY29udGVudC1kaXNwb3NpdGlvbj0qJnJlc3BvbnNlLWNvbnRlbnQtdHlwZT0qIn1dfQ__&Signature=A9jKF1jw8YO8OFuB7CzbaeQrEdT8wuPZJnT%7E1gZTxBAot9-HBQypW4IMsP7XPCeWnfdJBH4EKcsfzP2RU2-y2%7ENHrJl6wd9n-Wyi5traDPUgoHlSGIe6BvEKJlkzUI7gf87ThVWNc6wI3kHZM0l3dESE0ID2e2aCKGNxUCfaV%7EBdyt-Myr0HbVQtfYR8SjW7Rdj5WCJy9vOZKS3y2nzfPsUZRNtup4Xw3EW%7Ei0BGomdrB%7EfoOj4A0CvuL-La8SxPz1a3AcakD0ti8P0TPIJ9FrjmWLr49t9gJvn2XMYD3mH8VVsSBsGDn6pjgTLS4FK0KvCu-lIqt14v1bF10wCzBA__&Key-Pair-Id=KVTP0A1DKRTAX",
-                        use_column_width=True,
-                    )
+            st.info("🎨 Upload your face image and imagine the possibilities!")
+            st.write("Original repo: https://github.com/InstantID/InstantID")
+            st.image("https://github.com/InstantID/InstantID/blob/main/assets/compare-c.png?raw=true", use_column_width=True)
 
 
 if __name__ == "__main__":
