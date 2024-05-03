@@ -220,7 +220,6 @@ async def main_page(
                                 "guidance_scale": guidance_scale,
                                 "negative_prompt": negative_prompt,
                                 "controlnet_conditioning_scale": controlnet_conditioning_scale,
-                                "clip_skip": model_config[model_name]["clip_skip"],
                             },
                         }
                         duplicate_data = [data.copy() for _ in range(num_images)]
