@@ -66,7 +66,7 @@ for model in model_distribution.keys():
     if model_data.mean_score.sum() == 0:
         continue
     fig = go.Figure(data=[go.Bar(x=model_data.uid, y=model_data.mean_score,
-            hovertext=[f"Total volume {volume} - {str(device_info)}" for volume, device_info in zip(model_data.total_volume, model.device_info)], marker_color='lightsalmon')])
+            hovertext=[f"Total volume {volume} - {str(device_info)}" for volume, device_info in zip(model_data.total_volume, model_data.device_info)], marker_color='lightsalmon')])
     fig.update_layout(title_text=f"Model: {model}", xaxis_title="UID", yaxis_title="Mean Score")
     
     fig.update_layout(
