@@ -55,6 +55,7 @@ for k, v in response["info"].items():
                 sum(v["scores"]) / (len(v["scores"])) if len(v["scores"]) > 0 else 0
             ),
             "total_volume": v["total_volume"],
+            "device_info": v.get("device_info", {})
         }
     )
 transformed_dict = pd.DataFrame(transformed_dict)
