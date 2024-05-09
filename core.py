@@ -224,6 +224,7 @@ async def main_page(
                                 "controlnet_conditioning_scale": controlnet_conditioning_scale,
                                 "ip_adapter_scale": ip_adapter_scale,
                                 "kps_conditional_image": pose_image,
+                                "clip_skip": 2,
                             },
                         }
                         duplicate_data = [data.copy() for _ in range(num_images)]
