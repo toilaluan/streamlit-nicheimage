@@ -178,6 +178,7 @@ async def main():
         "img2img",
         API_TOKEN,
         generated_images_placeholder,
+        {"num_inference_steps": 20, "strength": 0.8}
     )
     if not submitted:
         st.info("🎨 Upload your image and imagine the possibilities!")
