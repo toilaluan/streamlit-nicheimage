@@ -160,6 +160,7 @@ async def main_page(
     generated_images_placeholder,
     ip_adapter_scale: float = 1.0,
     pose_image: str = "",
+    override_pipeline_params: dict {},
 ) -> None:
     """Main page layout and logic for generating images.
 
@@ -227,6 +228,8 @@ async def main_page(
                                 "clip_skip": 2,
                             },
                         }
+                        for k, v in override_pipeline_params.items():
+                            data['pipeline_params'][k] = v
                         duplicate_data = [data.copy() for _ in range(num_images)]
                         for i, d in enumerate(duplicate_data):
                             d["seed"] = seeds[i]
