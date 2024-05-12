@@ -160,7 +160,7 @@ async def main_page(
     generated_images_placeholder,
     ip_adapter_scale: float = 1.0,
     pose_image: str = "",
-    override_pipeline_params: dict {},
+    override_pipeline_params: dict = {},
 ) -> None:
     """Main page layout and logic for generating images.
 
