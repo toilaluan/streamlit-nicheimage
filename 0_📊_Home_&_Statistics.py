@@ -52,7 +52,7 @@ for k, v in response["info"].items():
             "uid": k,
             "model_name": v["model_name"],
             "mean_score": (
-                sum(v["scores"]) / (len(v["scores"])) if len(v["scores"]) > 0 else 0
+                sum(v["scores"]) / 10
             ),
             "total_volume": v["total_volume"],
             "device_info": v.get("device_info", {})
