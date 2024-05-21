@@ -32,7 +32,6 @@ print(validator_uids)
 validator_select = st.selectbox(
     "Select a validator",
     validator_uids,
-    index=validator_uids.index(202)
 )
 validator_select = str(validator_select)
 response = all_validator_response[validator_select]
