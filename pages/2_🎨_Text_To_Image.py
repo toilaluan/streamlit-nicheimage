@@ -96,8 +96,6 @@ def configure_sidebar() -> None:
                     "RealitiesEdgeXL",
                     "DreamShaperXL",
                     "JuggernautXL",
-                    "RealisticVision",
-                    "DreamShaper",
                 ],
             )
             prompt = st.text_area(
@@ -179,40 +177,37 @@ async def main():
         with gallery_placeholder.container():
             with st.container():
                 st.info(
-                    "👩🏾‍🍳 :blue[**Realistic Vision Style - [CivitAI](https://civitai.com/models/4201/realistic-vision-v60-b1)**]"
+                    "👩🏾‍🍳 :blue[**Juggernaut-X]"
                 )
                 st.balloons()
             with st.container(border=True):
                 _ = image_select(
                     label="",
                     images=[
-                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/401d2674-e1f8-4976-a615-36110d0b76b3/original=true/ref-res-1.jpeg",
-                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/d2050c06-e916-4091-857a-66bdafcaf6d9/original=true/00029-913302605.jpeg",
-                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/0012d0e9-6d77-4981-b16e-13ac9f3eeb53/original=true/00011-836818560.jpeg",
-                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/088542b8-00dc-4135-8115-f2086ebb4ffb/original=true/06772-2405195618-HDR,UHD,8K,Highly%20detailed,best%20quality,masterpiece,_lora_catman_0.8_,maomi,blurry%20background,blurry,sunglasses,hat,hands%20in%20poc.jpeg",
-                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/3b23b565-9b7b-4e5b-9a40-ff9b5e80565d/original=true/00076-329187343.jpeg",
+                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/265d6db9-9bb4-40b9-b9f1-4404666effd7/width=1248/00078-beautiful%20lady,%20(freckles),%20big%20smile,%20brown%20hazel%20eyes,%20Full%20Bangs,%20dark%20makeup,%20hyperdetailed%20photography,%20soft%20light,%20head%20an.jpeg",
+                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/c86d17eb-665d-454c-9066-69eb4f92768d/width=1248/00081-photograph,%20a%20path%20in%20the%20woods%20with%20leaves%20and%20the%20sun%20shining%20,%20by%20Julian%20Allen,%20dramatic%20autumn%20landscape,%20ears,%20park,%20take%20o.jpeg",
+                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/f8d6172e-fb2f-4152-af0f-e725fb0882cb/width=832/016216210EFBD7BBEE3F1D139A898EFDDDEDB7C4AFFB500D0AC6C892A91E045C.jpeg",
+                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/d21f78d9-662d-419c-a38a-03a7260aac88/width=832/4AFCAF1B0AE99B392B2E1010D50885C749F595484232AF2724A0570ABDF6B142.jpeg",
                     ],
                     use_container_width=False,
                 )
             with st.container():
                 st.info(
-                    "👩🏾‍🍳 :blue[**DreamShaper Style - [CivitAI](https://civitai.com/models/4384/dreamshaper)**]"
+                    "👩🏾‍🍳 :blue[**DreamShaperXL]"
                 )
             with st.container(border=True):
                 _ = image_select(
                     label="",
                     images=[
-                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/af837eea-2ccc-4801-b916-75ecb270c382/original=true/71584-4007479174-masterpiece,%20a%20dinosaur%20(in%20the%20museum_1.2),%20background%20is%20museum%20exhibition,%20(art%20by%20YRAX_1.1),%20saturated%20colors,%20concept%20art,.jpeg",
-                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/77940ee3-062a-4d2b-95c4-52c69b79fffd/original=true/00524-2430470379.jpeg",
-                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1649bcd9-4417-4c83-97f8-674373b67d61/original=true/42445-1548916933-wabstyle,%20monochrome,%20_lora_wabstyle_1_%20a%20dog.jpeg",
-                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/09264ecb-38c6-42ed-a2f7-a7ab5ab662fb/original=true/00262-5775713%20-%20Kopie.jpeg",
-                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/a25faadc-7370-426d-9e95-1e102a10e508/original=true/00613-787076454-(a%20Glass%20ring_1.3),%20masterpiece,%20best%20quality,%20_lora_RingArt_Sora_0.8_,%20(style%20of%20Ellen%20Gallagher_1.3)__(masterpiece,%20best%20quali%20(1).jpeg",
+                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/fb00718b-227c-462c-ad03-1371f63e3213/width=1224/31072150-554464390-In%20Casey%20Baugh's%20evocative%20style,%20art%20of%20a%20beautiful%20young%20girl%20cyborg%20with%20long%20brown%20hair,%20futuristic,%20scifi,%20intricate,%20elega.jpeg",
+                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/d2d6d082-85ae-4cd5-a31e-ae6075e7e612/width=1224/31072152-3346112079-cinematic%20film%20still,%20close%20up,%20photo%20of%20redheaded%20girl%20near%20grasses,%20fictional%20landscapes,%20(intense%20sunlight_1.4),%20realist%20deta.jpeg",
+                        "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/83ef8f36-b054-4845-8b34-866a9a9e5184/width=1152/20240324050414%20745855931%20by%20Ian%20McQue%20and%20Sam%20Spratt,%20%20_lora_EnvyStudioPortraitXL01_0.35_%20,%20%20%20pointing%20a%20pistol%20_lora_pistol_0.60_.jpeg"
                     ],
                     use_container_width=False,
                 )
             with st.container():
                 st.info(
-                    "👩🏾‍🍳 :blue[**AnimeV3 Style - [CivitAI](https://civitai.com/models/146113/newdream-sdxl)**]"
+                    "👩🏾‍🍳 :blue[**AnimeV3]"
                 )
             with st.container(border=True):
                 _ = image_select(
@@ -228,7 +223,7 @@ async def main():
                 )
             with st.container():
                 st.info(
-                    "👩🏾‍🍳 :blue[**RealitiesEdgeXL Style - [CivitAI](https://civitai.com/models/129666?modelVersionId=356472)**]"
+                    "👩🏾‍🍳 :blue[**RealitiesEdgeXL]"
                 )
             with st.container(border=True):
                 _ = image_select(
