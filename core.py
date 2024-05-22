@@ -226,6 +226,7 @@ async def main_page(
                                 "ip_adapter_scale": ip_adapter_scale,
                                 "kps_conditional_image": pose_image,
                                 "clip_skip": 2,
+                                "use_expansion": True,
                             },
                         }
                         for k, v in override_pipeline_params.items():
