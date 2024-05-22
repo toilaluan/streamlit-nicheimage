@@ -177,7 +177,7 @@ async def main():
         with gallery_placeholder.container():
             with st.container():
                 st.info(
-                    "👩🏾‍🍳 :blue[**Juggernaut-X]"
+                    "👩🏾‍🍳 :blue[**Juggernaut-X**]"
                 )
                 st.balloons()
             with st.container(border=True):
@@ -193,7 +193,7 @@ async def main():
                 )
             with st.container():
                 st.info(
-                    "👩🏾‍🍳 :blue[**DreamShaperXL]"
+                    "👩🏾‍🍳 :blue[**DreamShaperXL**]"
                 )
             with st.container(border=True):
                 _ = image_select(
@@ -207,7 +207,7 @@ async def main():
                 )
             with st.container():
                 st.info(
-                    "👩🏾‍🍳 :blue[**AnimeV3]"
+                    "👩🏾‍🍳 :blue[**AnimeV3**]"
                 )
             with st.container(border=True):
                 _ = image_select(
@@ -223,7 +223,7 @@ async def main():
                 )
             with st.container():
                 st.info(
-                    "👩🏾‍🍳 :blue[**RealitiesEdgeXL]"
+                    "👩🏾‍🍳 :blue[**RealitiesEdgeXL**]"
                 )
             with st.container(border=True):
                 _ = image_select(
