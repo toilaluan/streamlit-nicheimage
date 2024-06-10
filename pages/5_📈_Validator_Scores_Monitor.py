@@ -8,16 +8,16 @@ from datetime import timedelta
 
 
 # For test
-# URL_GET_MINER_TIMELINE = "http://20.62.195.114:8000/get_miner_timeline"
-# URL_GET_MINER_INFO = "http://20.62.195.114:8000/get_miner_info"
-# VALID_UIDS = [str(x) for x in range(256)]
-# DEFAULT_VALIDATOR_UID = 1
+URL_GET_MINER_TIMELINE = "http://20.62.195.114:8000/get_miner_timeline"
+URL_GET_MINER_INFO = "http://20.62.195.114:8000/get_miner_info"
+VALID_UIDS = [str(x) for x in range(256)]
+DEFAULT_VALIDATOR_UID = 1
 
 # For production
-URL_GET_MINER_TIMELINE = "http://nichestorage.nichetensor.com:10000/get_miner_timeline"
-URL_GET_MINER_INFO = "http://nichestorage.nichetensor.com:10000/get_miner_info"
-VALID_UIDS = ["0", "202", "232", "242", "133", "132", "228", "28", "121"]
-DEFAULT_VALIDATOR_UID = 202
+# URL_GET_MINER_TIMELINE = "http://nichestorage.nichetensor.com:10000/get_miner_timeline"
+# URL_GET_MINER_INFO = "http://nichestorage.nichetensor.com:10000/get_miner_info"
+# VALID_UIDS = ["0", "202", "232", "242", "133", "132", "228", "28", "121"]
+# DEFAULT_VALIDATOR_UID = 202
 
 LST_MODEL_NAMES = ["GoJourney", "AnimeV3", "JuggernautXL", "RealitiesEdgeXL", "DreamShaperXL", "Gemma7b", "Llama3_70b","FaceToMany", "StickerMaker", "DallE"]
 st.set_page_config( layout="wide")
@@ -70,8 +70,9 @@ def get_miner_info_timeline():
         st.session_state.timeline_miner_info = timeline_miner_info
     except Exception as ex:
         print("[ERROR] Fetch data: ", str(ex))
-        
-get_miner_info_timeline()
+
+if "timeline_miner_info" not in  st.session_state:
+    get_miner_info_timeline()
 
 st.session_state.timeline_miner_info = timeline_miner_info
 all_validator_response = st.session_state.timeline_miner_info 
