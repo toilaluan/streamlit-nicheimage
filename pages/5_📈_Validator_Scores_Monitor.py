@@ -94,7 +94,7 @@ model_select = st.selectbox(
     index=None
 )
 
-miner_uids = [int(k) for k,v  in validator_data.get("info", {}).items() if v["model_name"].strip() and (model_select is None  or v["model_name"]==model_select)]
+miner_uids = [int(k) for k,v  in validator_data.get("info", {}).items() if  model_select is None  or v["model_name"]==model_select]
 if len(miner_uids) > 0:
     miner_select = st.selectbox(
         "Select a miner",
