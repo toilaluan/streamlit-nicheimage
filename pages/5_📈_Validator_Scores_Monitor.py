@@ -48,7 +48,7 @@ def plot_timeline_chart(dates, values, miner_data):
             xaxis_title='Date',
             yaxis_title='Score',
             xaxis=dict(
-                tickformat='%H:%M:%S',
+                tickformat='%Y-%m-%d %H:%M:%S',
                 tickangle=-45,
                 # tickvals=[date + timedelta(minutes=10) for date in dates]
             ),
