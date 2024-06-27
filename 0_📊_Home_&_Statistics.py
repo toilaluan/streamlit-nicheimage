@@ -97,7 +97,7 @@ with tabs[1]:
 
     URL_GET_MINER_TIMELINE = "http://nichestorage.nichetensor.com:10000/get_miner_timeline"
     URL_GET_MINER_INFO = "http://nichestorage.nichetensor.com:10000/get_miner_info"
-    VALID_UIDS = ["0", "202", "232", "242", "133", "132", "228", "28", "121"]
+    VALID_UIDS = ["0","1", "202", "232", "242", "133", "132", "228", "28", "121"]
     DEFAULT_VALIDATOR_UID = "202"
 
     def get_miner_timeline(validator_id, miner_id):
