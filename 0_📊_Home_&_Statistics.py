@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 VALID_UIDS = ["202", "0", "178", "232", "28", "242", "78", "228", "17", "133", "200"]
 st.set_page_config(page_title="NicheImage Studio", layout="wide")
 st.markdown("## :blue[Image Generation Studio by NicheImage]")
-replicate_logo = "https://nichetensor.com/wp-content/uploads/2024/04/cropped-NicheTensor_logo_transparent.png"
+replicate_logo = "https://i.ibb.co/rdspnnK/Screenshot-2024-08-01-at-10-54-37.png"
 st.markdown(
     """
     **NicheImage is a decentralized network of image generation models, powered by the Bittensor protocol. Below you find information about the current models on the network.**
