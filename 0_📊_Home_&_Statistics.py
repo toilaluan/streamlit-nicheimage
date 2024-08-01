@@ -4,7 +4,7 @@ import plotly.express as px
 import pandas as pd
 import plotly.graph_objects as go
 
-VALID_UIDS = ["0", "1", "202", "232", "242", "133", "132", "228", "28", "90", "200"]
+VALID_UIDS = ["202", "0", "178", "232", "28", "242", "78", "228", "17", "133", "200"]
 st.set_page_config(page_title="NicheImage Studio", layout="wide")
 st.markdown("## :blue[Image Generation Studio by NicheImage]")
 replicate_logo = "https://nichetensor.com/wp-content/uploads/2024/04/cropped-NicheTensor_logo_transparent.png"
