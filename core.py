@@ -114,6 +114,16 @@ model_config = {
         "guidance_scale": 7,
         "ratio": sdxl_ratio_to_size
     },
+    "FluxSchnell": {
+        "num_inference_steps": 3,
+        "guidance_scale": 0.0,
+        "ratio": sdxl_ratio_to_size
+    },
+    "Kolors": {
+        "num_inference_steps": 25,
+        "guidance_scale": 6.0,
+        "ratio": sdxl_ratio_to_size
+    },
 }
 
 
