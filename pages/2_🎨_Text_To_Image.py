@@ -92,6 +92,8 @@ def configure_sidebar() -> None:
             model_name = st.selectbox(
                 ":blue[**Select Model**]",
                 options=[
+                    "FluxSchnell",
+                    "Kolors",
                     "AnimeV3",
                     "RealitiesEdgeXL",
                     "DreamShaperXL",
