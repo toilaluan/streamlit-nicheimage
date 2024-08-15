@@ -5,6 +5,35 @@ import pandas as pd
 import plotly.graph_objects as go
 
 VALID_UIDS = ["202", "0", "178", "232", "28", "242", "78", "228", "17", "133", "200"]
+model_incentive_weight = {
+    'AnimeV3': 0.24, 
+    'JuggernautXL': 0.17, 
+    'RealitiesEdgeXL': 0.24, 
+    'Gemma7b': 0.03, 
+    'StickerMaker': 0.03, 
+    'FaceToMany': 0.00, 
+    'Kolors': 0.07, 
+    'FluxSchnell': 0.09, 
+    'DreamShaperXL': 0.00, 
+    'Llama3_70b': 0.04, 
+    'GoJourney': 0.04, 
+    'SUPIR': 0.05
+}
+COLOR_MAP = {
+    'AnimeV3': "#1f77b4", 
+    'JuggernautXL': "#ff7f0e", 
+    'RealitiesEdgeXL': "#2ca02c", 
+    'Gemma7b': "#d62728", 
+    'StickerMaker': "#9467bd", 
+    'FaceToMany': "#8c564b", 
+    'Kolors': "#e377c2", 
+    'FluxSchnell': "#bcbd22", 
+    'DreamShaperXL': "#7f7f7f", 
+    'Llama3_70b': "#f7b6d2", 
+    'GoJourney': "#17becf", 
+    'SUPIR': "#c5b0d5",
+    "": "#ffffcc"
+}
 st.set_page_config(page_title="NicheImage Studio", layout="wide")
 st.markdown("## :blue[Image Generation Studio by NicheImage]")
 replicate_logo = "https://i.ibb.co/rdspnnK/Screenshot-2024-08-01-at-10-54-37.png"
@@ -18,14 +47,17 @@ st.markdown(
 def get_total_volumes(miner_info_data):
     VALIDATOR_UID = 202
     model_volumes = {}
+    model_counts = {}
     info = miner_info_data[str(VALIDATOR_UID)]["info"]
     for uid, metadata in info.items():
         if metadata["model_name"].strip():
             if metadata["model_name"] not in model_volumes:
                 model_volumes[metadata["model_name"]] = 0
+            if metadata["model_name"] not in model_counts:
+                model_counts[metadata["model_name"]] = 0
             model_volumes[metadata["model_name"]] += metadata["total_volume"]
-
-    return model_volumes
+            model_counts[metadata["model_name"]] += 1
+    return model_volumes, model_counts
 
 tabs = st.tabs(["Dashboard", "Timeline Score"])
 with st.sidebar:
@@ -38,7 +70,7 @@ with tabs[0]:
 
 
     all_validator_response = st.session_state.stats
-    model_volumes = get_total_volumes(all_validator_response)
+    model_volumes, model_counts = get_total_volumes(all_validator_response)
     all_validator_response = {k: v for k, v in all_validator_response.items() if str(k) in VALID_UIDS}
     validator_uids = list(all_validator_response.keys())
     validator_uids = [int(uid) for uid in validator_uids]
@@ -56,45 +88,76 @@ with tabs[0]:
     for uid, info in response["info"].items():
         model_name = info["model_name"]
         model_distribution[model_name] = model_distribution.get(model_name, 0) + 1
-    fig = px.pie(
-        values=list(model_distribution.values()),
-        names=list(model_distribution.keys()),
-        title="Model Distribution",
+    
+    from plotly.subplots import make_subplots
+    fig = make_subplots(rows=1, cols=2, specs=[[{"type": "domain"}, {"type": "domain"}]], subplot_titles=("Model Distribution", "Emission Distribution"))
+    # Plot Model Distribution
+    fig.add_trace(
+        go.Pie(
+            values=list(model_distribution.values()),
+            labels=list(model_distribution.keys()),
+            marker=dict(colors=[COLOR_MAP[model] for model in model_distribution.keys()])
+        ),
+        row=1, col=1
+    )
+    # Plot Emission Distribution
+    fig.add_trace(
+        go.Pie(
+            values=list(model_incentive_weight.values()),
+            labels=list(model_incentive_weight.keys()),
+            marker=dict(colors=[COLOR_MAP[model] for model in model_incentive_weight.keys()])
+        ),
+        row=1, col=2
+    )
+
+    fig.update_layout(
+        title_text="Distribution",
+        width=1000,
+        showlegend=True
     )
     st.plotly_chart(fig)
 
     # Plot volume of models
-    models = list(model_volumes.keys()) + ["<b>Total Generations per Day</b>"]
+    models = list(model_volumes.keys())
     volumes = [x * 6 * 24 for x in list(model_volumes.values())]
+    volume_per_miners = [volumes[i] / model_counts[model] for i,model in enumerate(models)]
+    volume_per_percentage_emission = [volumes[i] / (model_incentive_weight[model] * 100)  if model_incentive_weight[model] > 0 else 0 for i,model in enumerate(models)]
     total_volume = sum(volumes)
     volumes += [total_volume]
+    volume_per_miners += [total_volume / sum(model_counts.values())]
+    volume_per_percentage_emission += [total_volume / 100] 
+
+    models += ["<b>Total Generations per Day</b>"]
     formatted_volumes = [f"{volume:,}" for volume in volumes]
     formatted_volumes[-1] = f"<b>{formatted_volumes[-1]}</b>"
-    
+    formatted_volume_per_miners = [f"{c:,.2f}" for c in volume_per_miners]
+    formatted_volume_per_miners[-1] = f"<b>{formatted_volume_per_miners[-1]}</b>"
+    formatted_volume_per_percentage_emission = [f"{c:,.2f}" for c in volume_per_percentage_emission]
+    formatted_volume_per_percentage_emission[-1] = f"<b>{formatted_volume_per_percentage_emission[-1]}</b>"
+
     table = go.Figure(data=[go.Table(
-        header=dict(values=["Model", "Volume"],
+        header=dict(values=["Model", "Registered Generations Per Day", "Average Volume Per Miner", "Average Volume Per Percentage Emission"],
                     fill_color='#4d79ff',
                     font=dict(color='white', size=16),
                     align='center'),
         cells=dict(
-            values=[models, formatted_volumes],
+            values=[models, formatted_volumes, formatted_volume_per_miners, formatted_volume_per_percentage_emission],
             fill_color=[['#f0f8ff']*(len(model_volumes)) + ['#d9e6ff'],
+                        ['#e6f2ff']*(len(model_volumes)) + ['#d9e6ff'],
+                        ['#e6f2ff']*(len(model_volumes)) + ['#d9e6ff'],
                         ['#e6f2ff']*(len(model_volumes)) + ['#d9e6ff']],
-            align=['left', 'right'], 
+            align=['left', 'right', 'right', 'right'], 
             font=dict(color='black', size=14),
             height=30 
         ),
-        columnwidth=[40, 20]
+        columnwidth=[25, 25, 25, 25]
     )])
 
     table.update_layout(
         height=30 * (len(models) + 4),
-        title_text='Total Registered Volume per day',
-        title_x=0,
-        width=400,
+        width=1000,
         margin=dict(l=0, r=0, t=50, b=0)  # Adjust margins for better title positioning
     )
-    
     st.plotly_chart(table)
 
     transformed_dict = []
@@ -125,6 +188,17 @@ with tabs[0]:
         response["info"][k]["success_rate"] = success_rate
 
     transformed_dict = pd.DataFrame(transformed_dict)
+
+    # plot overall chart
+    pd_data = pd.DataFrame(response["info"])
+    st.markdown(
+        """
+        **Total Information**
+        """,
+        unsafe_allow_html=True,
+    )
+    st.dataframe(pd_data.T)
+
     # plot N bar chart for N models, sorted by mean score
     for model in model_distribution.keys():
         model_data = transformed_dict[transformed_dict["model_name"] == model]
@@ -156,15 +230,6 @@ with tabs[0]:
         )
         st.plotly_chart(fig)
 
-
-    pd_data = pd.DataFrame(response["info"])
-    st.markdown(
-        """
-        **Total Information**
-        """,
-        unsafe_allow_html=True,
-    )
-    st.dataframe(pd_data.T)
 
 # with tabs[1]:
 #     import requests
