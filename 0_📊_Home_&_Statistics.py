@@ -66,7 +66,7 @@ with tabs[0]:
     # Plot volume of models
     models = list(model_volumes.keys())
     volumes = list(model_volumes.values())
-    fig = px.bar(x=models, y=volumes, labels={'x':'Model', 'y':'Volume'}, title="Total Registered Volume")
+    fig = px.bar(x=models, y=volumes, labels={'x':'Model', 'y':'Volume'}, title="Total Registered Volume (epoch = 10 minutes)")
     st.plotly_chart(fig)
 
 
