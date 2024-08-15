@@ -64,12 +64,12 @@ with tabs[0]:
     st.plotly_chart(fig)
 
     # Plot volume of models
-    models = list(model_volumes.keys()) + ["Total Generations per Day"]
+    models = list(model_volumes.keys()) + ["<b>Total Generations per Day</b>"]
     volumes = [x * 6 * 24 for x in list(model_volumes.values())]
     total_volume = sum(volumes)
     volumes += [total_volume]
     formatted_volumes = [f"{volume:,}" for volume in volumes]
-
+    formatted_volumes[-1] = f"<b>{formatted_volumes[-1]}</b>"
     
     table = go.Figure(data=[go.Table(
         header=dict(values=["Model", "Volume per day"],
