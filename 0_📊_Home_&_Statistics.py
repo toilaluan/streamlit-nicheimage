@@ -64,14 +64,47 @@ with tabs[0]:
     st.plotly_chart(fig)
 
     # Plot volume of models
-    models = list(model_volumes.keys())
-    volumes = list(model_volumes.values())
-    fig = px.bar(x=models, y=volumes, labels={'x':'Model', 'y':'Volume'}, title="Volume of Models per 10 Minutes")
-    st.plotly_chart(fig)
+    models = list(model_volumes.keys()) + ["Total Generations per Day"]
+    volumes = [x * 6 * 24 for x in list(model_volumes.values())]
+    total_volume = sum(volumes)
+    volumes += [total_volume]
+    formatted_volumes = [f"{volume:,}" for volume in volumes]
 
+    
+    table = go.Figure(data=[go.Table(
+        header=dict(values=["Model", "Volume per day"],
+                    fill_color='#4d79ff',
+                    font=dict(color='white', size=14),
+                    align='center'),
+        cells=dict(
+            values=[models, formatted_volumes],
+            fill_color=[['#f0f8ff']*(len(model_volumes)) + ['#d9e6ff'],
+                        ['#e6f2ff']*(len(model_volumes)) + ['#d9e6ff']],
+            align=['left', 'right'], 
+            font=dict(color='black', size=12),
+            height=30 
+        )
+    )])
+
+    table.update_layout(
+        height=30 * (len(models) + 4),
+        title_text='Total Registered Volume per day',
+        title_x=0,
+        margin=dict(l=0, r=0, t=50, b=0)  # Adjust margins for better title positioning
+    )
+    
+    st.plotly_chart(table)
 
     transformed_dict = []
     for k, v in response["info"].items():
+        if "process_time" in v:
+            process_time = [x for x in v["process_time"] if x >0]
+            mean_process_time = sum(process_time) / len(process_time) if len(process_time) > 0 else 0
+            success_rate = len(process_time) / len(v["process_time"]) if len(v["process_time"]) > 0 else 1
+        else:
+            process_time = []
+            success_rate = 1
+            mean_process_time = 0
         transformed_dict.append(
             {
                 "uid": k,
@@ -79,10 +112,16 @@ with tabs[0]:
                 "mean_score": (
                     sum(v["scores"]) / 10
                 ),
-                "total_volume": v["total_volume"],
-                "device_info": v.get("device_info", {})
+                "total_volume": v["total_volume"] if  v.get("total_volume") else 0,
+                "device_info": v.get("device_info", {}),
+                "mean_process_time": mean_process_time,
+                "success_rate": success_rate
             }
         )
+        
+        response["info"][k]["mean_process_time"] = mean_process_time
+        response["info"][k]["success_rate"] = success_rate
+
     transformed_dict = pd.DataFrame(transformed_dict)
     # plot N bar chart for N models, sorted by mean score
     for model in model_distribution.keys():
@@ -99,6 +138,23 @@ with tabs[0]:
             xaxis=dict(type="category"),
         )
         st.plotly_chart(fig)
+        
+        # Plot process time and success rate chart
+        df = pd.DataFrame(model_data)
+        fig = px.scatter(df, x="mean_process_time", y="success_rate", 
+                hover_data=["uid", "model_name", "mean_score"],
+                size="total_volume", color="uid"
+            )
+        fig.update_layout(
+            xaxis_title="Mean Process Time (seconds)",
+            yaxis_title="Success Rate",
+            xaxis=dict(range=[0, df["mean_process_time"].max() * 1.1]),
+            yaxis=dict(range=[0, 1.1]),
+            legend_title="UID",
+        )
+        st.plotly_chart(fig)
+
+
     pd_data = pd.DataFrame(response["info"])
     st.markdown(
         """
