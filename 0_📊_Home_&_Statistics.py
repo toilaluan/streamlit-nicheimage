@@ -72,24 +72,26 @@ with tabs[0]:
     formatted_volumes[-1] = f"<b>{formatted_volumes[-1]}</b>"
     
     table = go.Figure(data=[go.Table(
-        header=dict(values=["Model", "Volume per day"],
+        header=dict(values=["Model", "Volume"],
                     fill_color='#4d79ff',
-                    font=dict(color='white', size=14),
+                    font=dict(color='white', size=16),
                     align='center'),
         cells=dict(
             values=[models, formatted_volumes],
             fill_color=[['#f0f8ff']*(len(model_volumes)) + ['#d9e6ff'],
                         ['#e6f2ff']*(len(model_volumes)) + ['#d9e6ff']],
             align=['left', 'right'], 
-            font=dict(color='black', size=12),
+            font=dict(color='black', size=14),
             height=30 
-        )
+        ),
+        columnwidth=[40, 20]
     )])
 
     table.update_layout(
         height=30 * (len(models) + 4),
         title_text='Total Registered Volume per day',
         title_x=0,
+        width=400,
         margin=dict(l=0, r=0, t=50, b=0)  # Adjust margins for better title positioning
     )
     
