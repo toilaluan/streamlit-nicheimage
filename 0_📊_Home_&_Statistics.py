@@ -15,6 +15,18 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+def get_total_volumes(miner_info_data):
+    VALIDATOR_UID = 202
+    model_volumes = {}
+    info = miner_info_data[str(VALIDATOR_UID)]["info"]
+    for uid, metadata in info.items():
+        if metadata["model_name"].strip():
+            if metadata["model_name"] not in model_volumes:
+                model_volumes[metadata["model_name"]] = 0
+            model_volumes[metadata["model_name"]] += metadata["total_volume"]
+
+    return model_volumes
+
 tabs = st.tabs(["Dashboard", "Timeline Score"])
 with st.sidebar:
     st.image(replicate_logo, use_column_width=True)
@@ -24,7 +36,9 @@ with tabs[0]:
         response = response.json()
         st.session_state.stats = response
 
+
     all_validator_response = st.session_state.stats
+    model_volumes = get_total_volumes(all_validator_response)
     all_validator_response = {k: v for k, v in all_validator_response.items() if str(k) in VALID_UIDS}
     validator_uids = list(all_validator_response.keys())
     validator_uids = [int(uid) for uid in validator_uids]
@@ -48,6 +62,14 @@ with tabs[0]:
         title="Model Distribution",
     )
     st.plotly_chart(fig)
+
+    # Plot volume of models
+    models = list(model_volumes.keys())
+    volumes = list(model_volumes.values())
+    fig = px.bar(x=models, y=volumes, labels={'x':'Model', 'y':'Volume'}, title="Volume of Models per 10 Minutes")
+    st.plotly_chart(fig)
+
+
     transformed_dict = []
     for k, v in response["info"].items():
         transformed_dict.append(
