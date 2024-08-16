@@ -3,6 +3,7 @@ import requests
 import plotly.express as px
 import pandas as pd
 import plotly.graph_objects as go
+import copy
 
 VALID_UIDS = ["202", "0", "178", "232", "28", "242", "78", "228", "17", "133", "200"]
 model_incentive_weight = {
@@ -120,15 +121,17 @@ with tabs[0]:
     # Plot volume of models
     models = list(model_volumes.keys())
     volumes = [x * 6 * 24 for x in list(model_volumes.values())]
+    organic_volumes = [x * 0.8 for x in volumes]
     volume_per_miners = [volumes[i] / model_counts[model] for i,model in enumerate(models)]
     volume_per_percentage_emission = [volumes[i] / (model_incentive_weight[model] * 100)  if model_incentive_weight[model] > 0 else 0 for i,model in enumerate(models)]
     total_volume = sum(volumes)
     volumes += [total_volume]
+    organic_volumes += [sum(organic_volumes)]
     volume_per_miners += [total_volume / sum(model_counts.values())]
     volume_per_percentage_emission += [total_volume / 100] 
 
-    models += ["<b>Total Generations per Day</b>"]
-    formatted_volumes = [f"{volume:,}" for volume in volumes]
+    models += ["<b>Total</b>"]
+    formatted_volumes = [f"{volume:,.0f}" for volume in organic_volumes]
     formatted_volumes[-1] = f"<b>{formatted_volumes[-1]}</b>"
     formatted_volume_per_miners = [f"{c:,.2f}" for c in volume_per_miners]
     formatted_volume_per_miners[-1] = f"<b>{formatted_volume_per_miners[-1]}</b>"
@@ -136,7 +139,7 @@ with tabs[0]:
     formatted_volume_per_percentage_emission[-1] = f"<b>{formatted_volume_per_percentage_emission[-1]}</b>"
 
     table = go.Figure(data=[go.Table(
-        header=dict(values=["Model", "Registered Generations Per Day", "Average Volume Per Miner", "Average Volume Per Percentage Emission"],
+        header=dict(values=["Model", "Generations Per Day*", "Average Volume Per Miner", "Average Volume Per Percentage Emission"],
                     fill_color='#4d79ff',
                     font=dict(color='white', size=16),
                     align='center'),
@@ -159,6 +162,11 @@ with tabs[0]:
         margin=dict(l=0, r=0, t=50, b=0)  # Adjust margins for better title positioning
     )
     st.plotly_chart(table)
+    st.markdown(
+        "<div style='width:1000px;'><p style='font-size:12px; font-style:italic;'>*Generations per day are calculated by taking the total volume miners say they can generate, and multiply with 0.8, since validators by default utilize about 80% of their available volume of generation.</p></div>",
+        unsafe_allow_html=True
+    )
+
 
     transformed_dict = []
     for k, v in response["info"].items():
@@ -190,15 +198,49 @@ with tabs[0]:
     transformed_dict = pd.DataFrame(transformed_dict)
 
     # plot overall chart
-    pd_data = pd.DataFrame(response["info"])
-    st.markdown(
-        """
-        **Total Information**
-        """,
-        unsafe_allow_html=True,
-    )
-    st.dataframe(pd_data.T)
-
+    overall_data = copy.deepcopy(response["info"])
+    for uid, inf in overall_data.items():
+        inf["scores"] = [f"{x:.4f}"for x in inf["scores"]]
+        inf["scores"] = ", ".join(inf["scores"])
+        inf["success_rate"] = f"{inf['success_rate']:.2f}"
+        inf["mean_process_time"] = f"{inf['mean_process_time']:.2f}"
+    pd_data = pd.DataFrame(overall_data).T
+     
+    st.markdown("**Total Information**", unsafe_allow_html=True)
+    st.dataframe(pd_data,
+        width=1500,
+        column_order = ("model_name", "scores", "total_volume", "success_rate", "mean_process_time", "reward_scale", "rate_limit", "device_info"),
+        column_config = {
+            "scores": st.column_config.ListColumn(
+                "Scores",
+            ),
+            "model_name": st.column_config.TextColumn(
+                "Model"
+            ),
+            "total_volume": st.column_config.ProgressColumn(
+                "Volume",
+                format="%f",
+                min_value=0,
+                max_value=1000,
+            ),
+            "success_rate": st.column_config.ProgressColumn(
+                "Success Rate",
+                format="%f",
+                min_value=0,
+                max_value=1
+            ),
+            "reward_scale": st.column_config.NumberColumn(
+                "Reward Scale"
+            ),
+            "mean_process_time": st.column_config.NumberColumn(
+                "Mean Process Time"
+            ),
+            "rate_limit": st.column_config.NumberColumn(
+                "Rate Limit"
+            ),
+            "device_info": st.column_config.TextColumn("Device Info"),
+        })
+  
     # plot N bar chart for N models, sorted by mean score
     for model in model_distribution.keys():
         model_data = transformed_dict[transformed_dict["model_name"] == model]
