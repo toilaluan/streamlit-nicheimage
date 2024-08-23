@@ -7,18 +7,18 @@ import copy
 
 VALID_UIDS = ["202", "0", "178", "232", "28", "242", "78", "228", "17", "133", "200"]
 model_incentive_weight = {
-    'AnimeV3': 0.24, 
-    'JuggernautXL': 0.17, 
-    'RealitiesEdgeXL': 0.24, 
+    'AnimeV3': 0.20, 
+    'JuggernautXL': 0.15, 
+    'RealitiesEdgeXL': 0.20, 
     'Gemma7b': 0.03, 
     'StickerMaker': 0.03, 
     'FaceToMany': 0.00, 
-    'Kolors': 0.07, 
-    'FluxSchnell': 0.09, 
+    'Kolors': 0.10, 
+    'FluxSchnell': 0.12, 
     'DreamShaperXL': 0.00, 
-    'Llama3_70b': 0.04, 
+    'Llama3_70b': 0.05, 
     'GoJourney': 0.04, 
-    'SUPIR': 0.05
+    'SUPIR': 0.08
 }
 COLOR_MAP = {
     'AnimeV3': "#1f77b4", 
@@ -208,7 +208,7 @@ with tabs[0]:
      
     st.markdown("**Total Information**", unsafe_allow_html=True)
     st.dataframe(pd_data,
-        width=1500,
+        width=1200,
         column_order = ("model_name", "scores", "total_volume", "success_rate", "mean_process_time", "reward_scale", "rate_limit", "device_info"),
         column_config = {
             "scores": st.column_config.ListColumn(
@@ -250,7 +250,7 @@ with tabs[0]:
             continue
         fig = go.Figure(data=[go.Bar(x=model_data.uid, y=model_data.mean_score,
                 hovertext=[f"Total volume {volume} - {str(device_info)}" for volume, device_info in zip(model_data.total_volume, model_data.device_info)], marker_color='lightsalmon')])
-        fig.update_layout(title_text=f"Model: {model}", xaxis_title="UID", yaxis_title="Mean Score")
+        fig.update_layout(title_text=f"Model: {model}", xaxis_title="UID", yaxis_title="Mean Score", width=1200)
         
         fig.update_layout(
             xaxis=dict(type="category"),
@@ -269,6 +269,7 @@ with tabs[0]:
             xaxis=dict(range=[0, df["mean_process_time"].max() * 1.1]),
             yaxis=dict(range=[0, 1.1]),
             legend_title="UID",
+            width=1200
         )
         st.plotly_chart(fig)
 
