@@ -60,9 +60,6 @@ def get_total_volumes(miner_info_data):
             model_counts[metadata["model_name"]] += 1
     return model_volumes, model_counts
 
-tabs = st.tabs(["Dashboard", "Timeline Score"])
-with st.sidebar:
-    st.image(replicate_logo, use_column_width=True)
 if "stats" not in st.session_state:
     response = requests.get("http://nichestorage.nichetensor.com:10000/get_miner_info")
     response = response.json()
