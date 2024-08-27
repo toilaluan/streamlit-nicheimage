@@ -18,10 +18,10 @@ st.markdown(
 )
 st.markdown(
     """
-<div style='text-align: center;'>
+<h2 style='text-align: center;'>
 [![Discord Chat](https://img.shields.io/badge/bittensor-discord-green?logo=discord)](https://discord.com/channels/799672011265015819/1191833510021955695)
 [![Github](https://img.shields.io/badge/nicheimage-github-blue?logo=github)](https://github.com/SocialTensor/SocialTensorSubnet)
-</div>
+</h2>
     """,
     unsafe_allow_html=True
 )
