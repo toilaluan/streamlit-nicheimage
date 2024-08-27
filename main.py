@@ -9,7 +9,6 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="SN23 Dashboard", layout="wide")
 _, col1, col2, _ = st.columns([2,1,1,2])
 
-cols = st.columns
 st.markdown(
     """
     <div style='text-align: center;'>
@@ -18,6 +17,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+cols = st.columns
 with col1:
     st.page_link("https://github.com/SocialTensor/SocialTensorSubnet", label="Github", icon=":material/code:")
 with col2:
