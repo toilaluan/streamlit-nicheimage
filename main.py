@@ -10,8 +10,24 @@ st.set_page_config(page_title="SN23 Dashboard", layout="wide")
 
 st.markdown(
     """
+    <div align="center">
+
+# **Bittensor SN32** <!-- omit in toc -->
+[![Discord Chat](https://img.shields.io/discord/308323056592486420.svg)](https://discord.gg/bittensor)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
+
+---
+
+## Decentralized AI Detection <!-- omit in toc -->  
+
+### [🌐 Website](https://its-ai.streamlit.app/)  
+### [⛏️ Mining Docs](docs/mining.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[🧑‍🏫 Validating Docs](docs/validating.md) 
+### [🗺 Vision & Roadmap](docs/vision_and_roadmap.md)  
+
+</div>
     <H1 style='text-align: center; color: blue'>
     # SocialTensor Subnet <!-- omit in toc -->  
+
     [![Discord Chat](https://img.shields.io/badge/bittensor-discord-green?logo=discord)](https://discord.com/channels/799672011265015819/1191833510021955695)]
     [![Github](https://img.shields.io/badge/nicheimage-github-blue?logo=github)](https://github.com/SocialTensor/SocialTensorSubnet)]
     ---
