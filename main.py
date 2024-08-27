@@ -6,8 +6,9 @@ import plotly.graph_objects as go
 import copy
 import streamlit.components.v1 as components
 
-tabs = st.tabs(["Dashboard", "Playground"])
+st.set_page_config(page_title="SN23 Dashboard", layout="wide")
 
+tabs = st.tabs(["Dashboard", "Playground"])
 
 with tabs[0]:
     VALID_UIDS = ["202", "0", "178", "232", "28", "242", "78", "228", "17", "133", "200"]
@@ -40,7 +41,6 @@ with tabs[0]:
         'SUPIR': "#c5b0d5",
         "": "#ffffcc"
     }
-    st.set_page_config(page_title="SN23 Dashboard", layout="wide")
     st.markdown("## :blue[SocialTensor Subnet Dashboard]")
     st.markdown(
         """
