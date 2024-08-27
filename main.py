@@ -12,7 +12,7 @@ st.markdown(
     """
     <div align="center" style="color: blue">
 
-# SocialTensor Subnet** <!-- omit in toc -->
+# SocialTensor Subnet <!-- omit in toc -->
 [![](https://img.shields.io/badge/bittensor-discord-green?logo=discord)](https://discord.com/channels/799672011265015819/1191833510021955695)
 [![](https://img.shields.io/badge/nicheimage-github-blue?logo=github)](https://github.com/SocialTensor/SocialTensorSubnet)
 
