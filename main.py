@@ -35,9 +35,8 @@ COLOR_MAP = {
     'SUPIR': "#c5b0d5",
     "": "#ffffcc"
 }
-st.set_page_config(page_title="NicheImage Studio", layout="wide")
+st.set_page_config(page_title="SN23 Dashboard", layout="wide")
 st.markdown("## :blue[SocialTensor Subnet Dashboard]")
-replicate_logo = "https://i.ibb.co/rdspnnK/Screenshot-2024-08-01-at-10-54-37.png"
 st.markdown(
     """
     **NicheImage is a decentralized network of image generation models, powered by the Bittensor protocol. Below you find information about the current models on the network.**
