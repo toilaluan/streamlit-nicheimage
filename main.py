@@ -7,7 +7,7 @@ import copy
 import streamlit.components.v1 as components
 
 st.set_page_config(page_title="SN23 Dashboard", layout="wide")
-st.markdown("## :blue[SocialTensor Subnet")
+st.markdown("## :blue[SocialTensor Subnet]")
 st.page_link("https://github.com/SocialTensor/SocialTensorSubnet", label="Github", icon=":material/code:")
 st.page_link("https://discord.com/channels/799672011265015819/1191833510021955695", label="Discord", icon=":material/forum:")
 tabs = st.tabs(["Dashboard", "Playground"])
@@ -46,7 +46,7 @@ with tabs[0]:
     
     st.markdown(
         """
-        **NicheImage is a decentralized network of image generation models, powered by the Bittensor protocol. Below you find information about the current models on the network.**
+        > **NicheImage is a decentralized network of image generation models, powered by the Bittensor protocol. Below you find information about the current models on the network.**
         """,
         unsafe_allow_html=True,
     )
