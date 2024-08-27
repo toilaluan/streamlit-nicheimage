@@ -5,11 +5,22 @@ import pandas as pd
 import plotly.graph_objects as go
 import copy
 import streamlit.components.v1 as components
+_, col1, col2, _ = st.columns([2,1,1,2])
 
 st.set_page_config(page_title="SN23 Dashboard", layout="wide")
-st.markdown("## :blue[SocialTensor Subnet]")
-st.page_link("https://github.com/SocialTensor/SocialTensorSubnet", label="Github", icon=":material/code:")
-st.page_link("https://discord.com/channels/799672011265015819/1191833510021955695", label="Discord", icon=":material/forum:")
+cols = st.columns
+st.markdown(
+    """
+    <div style='text-align: center;'>
+        ## :blue[SocialTensor Subnet]
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+with col1:
+    st.page_link("https://github.com/SocialTensor/SocialTensorSubnet", label="Github", icon=":material/code:")
+with col2:
+    st.page_link("https://discord.com/channels/799672011265015819/1191833510021955695", label="Discord", icon=":material/forum:")
 tabs = st.tabs(["Dashboard", "Playground"])
 
 with tabs[0]:
