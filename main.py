@@ -11,25 +11,9 @@ st.set_page_config(page_title="SN23 Dashboard", layout="wide")
 st.markdown(
     """
     <div align="center" style="color: blue">
-
-# **SocialTensor Subnet** <!-- omit in toc -->
+# SocialTensor Subnet <!-- omit in toc -->
 [![](https://img.shields.io/badge/bittensor-discord-green?logo=discord)](https://discord.com/channels/799672011265015819/1191833510021955695)
 [![](https://img.shields.io/badge/nicheimage-github-blue?logo=github)](https://github.com/SocialTensor/SocialTensorSubnet)
-
----
-
-## Decentralized AI Detection <!-- omit in toc -->  
-
-### [🌐 Website](https://its-ai.streamlit.app/)  
-### [⛏️ Mining Docs](docs/mining.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[🧑‍🏫 Validating Docs](docs/validating.md) 
-### [🗺 Vision & Roadmap](docs/vision_and_roadmap.md)  
-
-</div>
-    <H1 style='text-align: center; color: blue'>
-    # SocialTensor Subnet <!-- omit in toc -->  
-
-
-    ---
     </H1>
     """,
      unsafe_allow_html=True
