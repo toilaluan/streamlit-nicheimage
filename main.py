@@ -18,10 +18,22 @@ st.markdown(
 )
 st.markdown(
     """
-    <div align="center">
-    [![Discord Chat](https://img.shields.io/discord/308323056592486420.svg)](https://discord.gg/bittensor)
+   <div align="center">
+
+# **Bittensor SN32** <!-- omit in toc -->
+[![Discord Chat](https://img.shields.io/discord/308323056592486420.svg)](https://discord.gg/bittensor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
-    </div>
+
+---
+
+## Decentralized AI Detection <!-- omit in toc -->  
+
+### [🌐 Website](https://its-ai.streamlit.app/)  
+### [⛏️ Mining Docs](docs/mining.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[🧑‍🏫 Validating Docs](docs/validating.md) 
+### [🗺 Vision & Roadmap](docs/vision_and_roadmap.md)  
+
+</div>
+
     """,
     unsafe_allow_html=True
 )
