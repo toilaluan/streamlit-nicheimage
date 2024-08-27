@@ -12,9 +12,16 @@ st.markdown(
     """
     <H1 style='text-align: center; color: blue'>
         SocialTensor Subnet
-        [![Discord Chat](https://img.shields.io/badge/bittensor-discord-green?logo=discord)](https://discord.com/channels/799672011265015819/1191833510021955695)]
-        [![Github](https://img.shields.io/badge/nicheimage-github-blue?logo=github)](https://github.com/SocialTensor/SocialTensorSubnet)]
     </H1>
+    """,
+    unsafe_allow_html=True
+)
+st.markdown(
+    """
+    <div>
+    [![Discord Chat](https://img.shields.io/badge/bittensor-discord-green?logo=discord)](https://discord.com/channels/799672011265015819/1191833510021955695)]
+    [![Github](https://img.shields.io/badge/nicheimage-github-blue?logo=github)](https://github.com/SocialTensor/SocialTensorSubnet)]
+    </div>
     """,
     unsafe_allow_html=True
 )
