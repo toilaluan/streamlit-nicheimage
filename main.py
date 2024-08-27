@@ -11,9 +11,9 @@ _, col1, col2, _ = st.columns([2,1,1,2])
 
 st.markdown(
     """
-    <div style='text-align: center;'>
-        ## :blue[SocialTensor Subnet]
-    </div>
+    <H1 style='text-align: center; color: blue'>
+        SocialTensor Subnet
+    </H1>
     """,
     unsafe_allow_html=True
 )
