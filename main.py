@@ -18,19 +18,7 @@ st.markdown(
 
 ---
 
-## Decentralized AI Detection <!-- omit in toc -->  
-
-### [🌐 Website](https://its-ai.streamlit.app/)  
-### [⛏️ Mining Docs](docs/mining.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[🧑‍🏫 Validating Docs](docs/validating.md) 
-### [🗺 Vision & Roadmap](docs/vision_and_roadmap.md)  
-
 </div>
-    <H1 style='text-align: center; color: blue'>
-    # SocialTensor Subnet <!-- omit in toc -->  
-
-
-    ---
-    </H1>
     """,
      unsafe_allow_html=True
 )
