@@ -20,7 +20,7 @@ st.markdown(
     """,
      unsafe_allow_html=True
 )
-tabs = st.tabs(["Dashboard", "Playground"])
+tabs = st.tabs(["**Dashboard**", "**Playground**"])
 
 with tabs[0]:
     VALID_UIDS = ["202", "0", "178", "232", "28", "242", "78", "228", "17", "133", "200"]
