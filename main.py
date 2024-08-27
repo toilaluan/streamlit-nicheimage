@@ -12,18 +12,12 @@ st.markdown(
     """
     <H1 style='text-align: center; color: blue'>
         SocialTensor Subnet
+        [![Discord Chat](https://img.shields.io/badge/bittensor-discord-green?logo=discord)](https://discord.com/channels/799672011265015819/1191833510021955695)]
+        [![Github](https://img.shields.io/badge/nicheimage-github-blue?logo=github)](https://github.com/SocialTensor/SocialTensorSubnet)]
     </H1>
     """,
     unsafe_allow_html=True
 )
-st.write("[![Discord Chat](https://img.shields.io/badge/bittensor-discord-green?logo=discord)](https://discord.com/channels/799672011265015819/1191833510021955695)")
-st.write("[![Github](https://img.shields.io/badge/nicheimage-github-blue?logo=github)](https://github.com/SocialTensor/SocialTensorSubnet)")
-
-_, col1, col2, _ = st.columns([2,1,1,2])
-with col1:
-    st.page_link("https://github.com/SocialTensor/SocialTensorSubnet", label="Github", icon=":material/code:")
-with col2:
-    st.page_link("https://discord.com/channels/799672011265015819/1191833510021955695", label="Discord", icon=":material/forum:")
 tabs = st.tabs(["Dashboard", "Playground"])
 
 with tabs[0]:
