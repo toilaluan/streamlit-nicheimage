@@ -5,6 +5,10 @@ import pandas as pd
 import plotly.graph_objects as go
 import copy
 import streamlit.components.v1 as components
+from huggingface_hub import snapshot_download, list_repo_files, hf_hub_download
+import os, json, random
+import graphviz
+import datetime
 
 st.set_page_config(page_title="SN23 Dashboard", layout="wide")
 
@@ -20,14 +24,14 @@ st.markdown(
     """,
      unsafe_allow_html=True
 )
-tabs = st.tabs(["**Dashboard**", "**Playground**"])
+tabs = st.tabs(["**Dashboard**", "**Playground**", "**Open Category**"])
 
 with tabs[0]:
     VALID_UIDS = ["202", "0", "178", "232", "28", "242", "78", "228", "17", "133", "200"]
     model_incentive_weight = {
-        'AnimeV3': 0.20, 
+        'AnimeV3': 0.19, 
         'JuggernautXL': 0.15, 
-        'RealitiesEdgeXL': 0.20, 
+        'RealitiesEdgeXL': 0.19, 
         'Gemma7b': 0.03, 
         'StickerMaker': 0.03, 
         'FaceToMany': 0.00, 
@@ -36,7 +40,9 @@ with tabs[0]:
         'DreamShaperXL': 0.00, 
         'Llama3_70b': 0.05, 
         'GoJourney': 0.04, 
-        'SUPIR': 0.08
+        'SUPIR': 0.08,
+        'OpenGeneral': 0.01,
+        'OpenDigitalArt': 0.01
     }
     COLOR_MAP = {
         'AnimeV3': "#1f77b4", 
@@ -51,9 +57,11 @@ with tabs[0]:
         'Llama3_70b': "#f7b6d2", 
         'GoJourney': "#17becf", 
         'SUPIR': "#c5b0d5",
-        "": "#ffffcc"
+        "": "#ffffcc",
+        "OpenGeneral": "#98df8a ",
+        "OpenDigitalArt": "#ffbb78"
     }
-    
+
     st.markdown(
         """
         > **NicheImage is a decentralized network of image generation models, powered by the Bittensor protocol. Below you find information about the current models on the network.**
@@ -287,3 +295,144 @@ with tabs[0]:
 
 with tabs[1]:
     components.iframe("https://app.nichetensor.com", height=1024)
+
+with tabs[2]:
+    MAX_PROMPT = 10
+    SCORE_WEIGHTS = {"iqa": 0.5, "prompt_adherence": 0.5}
+    def calculate_score(prompt_adherence_scores, iqa_score):
+        pa_score = sum(prompt_adherence_scores) / len(prompt_adherence_scores) if len(prompt_adherence_scores) > 0 else 0
+        final_score = SCORE_WEIGHTS["prompt_adherence"] * pa_score + SCORE_WEIGHTS["iqa"] * iqa_score
+        return pa_score, final_score
+    def _download_folder(repo_id, repo_type, folder_path, local_dir):
+        files = list_repo_files(repo_id=repo_id, repo_type=repo_type)
+        file_names = []
+        for file_path in files:
+            if file_path.startswith(folder_path):
+                local_file_path = os.path.join(local_dir, file_path[len(folder_path)+1:])
+                if not os.path.exists(local_file_path):
+                    os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
+                    hf_hub_download(repo_id=repo_id, repo_type=repo_type, filename=file_path, local_dir=local_dir)
+            file_names.append(os.path.basename(file_path))
+        return file_names
+        
+    oc_data_path = "data"
+    oc_metadata_dir = os.path.join(oc_data_path, "metadata")
+    oc_img_dir = os.path.join(oc_data_path, "images")
+    os.makedirs(oc_metadata_dir, exist_ok=True)
+    os.makedirs(oc_img_dir, exist_ok=True)
+    repo_id = "nichetensor-org/open-category"
+    repo_type="dataset"
+    metadata_file_names = _download_folder(repo_id=repo_id, repo_type=repo_type, folder_path="metadata", local_dir=oc_data_path)
+    
+    metadata_files = os.listdir(oc_metadata_dir)
+    oc_prompt_data = {}
+    for file in metadata_files:
+        file_path = os.path.join(oc_metadata_dir,  file)
+        if file not in metadata_file_names:
+            os.remove(file_path)
+        else:
+            file_time = os.path.getmtime(file_path)
+            with open(file_path) as f:
+                dt = json.load(f)
+            prompt = dt.get("prompt")
+
+            dt["questions"] = [x.rstrip("Answer only Y or N.") for x in dt["questions"]]
+            dt["pa_score"], dt["final_score"] = calculate_score(dt["prompt_adherence_scores"]["0"], dt["iqa_scores"][0])
+            dt["iqa_score"] = [f"{x:.4f}"for x in dt["iqa_scores"]][0]
+            dt["file_time"] = file_time
+            if prompt not in oc_prompt_data:
+                oc_prompt_data[prompt] = []
+            if dt["final_score"] > 0:
+                oc_prompt_data[prompt].append(dt)
+
+    last_update_times = []
+    for prompt, dt in oc_prompt_data.items():
+        latest_file = max(dt, key=lambda x: x["file_time"])
+        latest_time = latest_file["file_time"]
+        last_update_times.append(latest_time)
+    combined = list(zip(last_update_times, oc_prompt_data.items()))
+    combined_sorted = sorted(combined, key=lambda x: x[0], reverse=True)[:MAX_PROMPT]
+    oc_prompt_data = dict([x[1] for x in combined_sorted])
+    
+    prompts = list(oc_prompt_data.keys())
+    prompt_select = st.selectbox(
+        "Select a prompt",
+        prompts,
+        index=0
+    )
+    prompt_data = oc_prompt_data[prompt_select]
+    prompt_data = sorted(prompt_data, key = lambda x: -x["final_score"])
+
+    pd_data = pd.DataFrame(prompt_data)
+    st.header("**Total Information**")
+    st.dataframe(pd_data,
+        width=1200,
+        column_order = ("pa_score", "iqa_score", "final_score"),
+        column_config = {
+            "iqa_score": st.column_config.NumberColumn(
+                "IQA Score",
+            ),
+            "final_score": st.column_config.ProgressColumn(
+                "Overall Score",
+                format="%.2f",
+                min_value=0,
+                max_value=1,
+            ),
+            "pa_score": st.column_config.NumberColumn(
+                "Prompt Adherence Score"
+            ),
+        })
+
+    st.header("**Davidsonian Scene Graph**")
+    nodes = []
+    edges = []
+    questions = prompt_data[0]["questions"]
+    dependencies = prompt_data[0]["dependencies"]
+   
+    # Create a graphviz Digraph object
+    dot = graphviz.Digraph()
+    dot.attr(size='10,10', rankdir='TB', nodesep='0.5', ranksep='1.0', newrank='true')  
+
+    dot.node("-1", "root")
+    # Add nodes (questions) to the graph
+    for i, question in enumerate(questions):
+        dot.node(str(i), question)
+        
+    # Add edges (dependencies) to the graph
+    children = []
+    for child, parents in dependencies.items():
+        for parent in parents:
+            dot.edge(str(parent), str(child))
+        if len(parents) > 0:
+            children.append(child)
+    for i, question in enumerate(questions):
+        if str(i) not in children:
+            dot.edge("-1", str(i))
+
+    st.graphviz_chart(dot, use_container_width=True)
+
+
+
+    df = pd.DataFrame(prompt_data[:10])
+
+    for idx, row in df.iterrows():
+        try:
+            img_path = row["images"][0]
+            local_img_path = os.path.join("data/images", img_path)
+            if not os.path.exists(local_img_path):
+                hf_hub_download(repo_id=repo_id, repo_type=repo_type, filename=os.path.join("images", img_path), local_dir=oc_data_path)
+            
+            mean_adherence_score = sum(row["prompt_adherence_scores"]["0"]) / len(row["prompt_adherence_scores"]["0"])
+            iqa_score = row["iqa_scores"][0]
+            total_score = row["final_score"]
+
+            st.subheader(f"Rank {idx+1}")
+            st.image(local_img_path, caption="")
+            
+            st.write(f"**Prompt Adherence Score**: {mean_adherence_score:.4f}")
+            st.write(f"**IQA Score**: {iqa_score:.4f}")
+            st.write(f"**Total Score**: {total_score:.4f}")
+            
+            st.markdown("---") 
+        except Exception as ex:
+            print("Show imgage ex: ", ex)
