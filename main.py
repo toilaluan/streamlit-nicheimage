@@ -29,9 +29,9 @@ tabs = st.tabs(["**Dashboard**", "**Playground**", "**Open Category**"])
 with tabs[0]:
     VALID_UIDS = ["202", "0", "178", "232", "28", "242", "78", "228", "17", "133", "200"]
     model_incentive_weight = {
-        'AnimeV3': 0.20, 
+        'AnimeV3': 0.19, 
         'JuggernautXL': 0.15, 
-        'RealitiesEdgeXL': 0.20, 
+        'RealitiesEdgeXL': 0.19, 
         'Gemma7b': 0.03, 
         'StickerMaker': 0.03, 
         'FaceToMany': 0.00, 
@@ -40,7 +40,9 @@ with tabs[0]:
         'DreamShaperXL': 0.00, 
         'Llama3_70b': 0.05, 
         'GoJourney': 0.04, 
-        'SUPIR': 0.08
+        'SUPIR': 0.08,
+        'OpenGeneral': 0.01,
+        'OpenDigitalArt': 0.01
     }
     COLOR_MAP = {
         'AnimeV3': "#1f77b4", 
@@ -55,9 +57,11 @@ with tabs[0]:
         'Llama3_70b': "#f7b6d2", 
         'GoJourney': "#17becf", 
         'SUPIR': "#c5b0d5",
-        "": "#ffffcc"
+        "": "#ffffcc",
+        "OpenGeneral": "#98df8a ",
+        "OpenDigitalArt": "#ffbb78"
     }
-    
+
     st.markdown(
         """
         > **NicheImage is a decentralized network of image generation models, powered by the Bittensor protocol. Below you find information about the current models on the network.**
