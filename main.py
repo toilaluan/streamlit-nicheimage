@@ -8,6 +8,8 @@ import streamlit.components.v1 as components
 from huggingface_hub import snapshot_download
 import os, json, random
 import graphviz
+import datetime
+
 st.set_page_config(page_title="SN23 Dashboard", layout="wide")
 
 st.markdown(
@@ -291,6 +293,7 @@ with tabs[1]:
     components.iframe("https://app.nichetensor.com", height=1024)
 
 with tabs[2]:
+    MAX_PROMPT = 10
     SCORE_WEIGHTS = {"iqa": 0.3, "prompt_adherence": 0.7}
     def calculate_score(prompt_adherence_scores, iqa_score):
         pa_score = sum(prompt_adherence_scores) / len(prompt_adherence_scores) if len(prompt_adherence_scores) > 0 else 0
@@ -310,6 +313,7 @@ with tabs[2]:
     oc_prompt_data = {}
     for file in metadata_files:
         file_path = os.path.join(oc_metadata_dir,  file)
+        file_time = os.path.getmtime(file_path)
         with open(file_path) as f:
             dt = json.load(f)
         prompt = dt.get("prompt")
@@ -321,12 +325,20 @@ with tabs[2]:
         dt["images"] = img_paths
         dt["pa_score"], dt["final_score"] = calculate_score(dt["prompt_adherence_scores"]["0"], dt["iqa_scores"][0])
         dt["iqa_score"] = [f"{x:.4f}"for x in dt["iqa_scores"]][0]
-        
+        dt["file_time"] = file_time
         if prompt not in oc_prompt_data:
             oc_prompt_data[prompt] = []
-        oc_prompt_data[prompt].append(dt)
+        if dt["final_score"] > 0:
+            oc_prompt_data[prompt].append(dt)
 
-
+    last_update_times = []
+    for prompt, dt in oc_prompt_data.items():
+        latest_file = max(dt, key=lambda x: x["file_time"])
+        latest_time = latest_file["file_time"]
+        last_update_times.append(latest_time)
+    combined = list(zip(last_update_times, oc_prompt_data.items()))
+    combined_sorted = sorted(combined, key=lambda x: x[1], reverse=True)[:MAX_PROMPT]
+    oc_prompt_data = dict([x[1] for x in combined_sorted])
 
     prompts = list(oc_prompt_data.keys())
     prompt_select = st.selectbox(
@@ -390,18 +402,20 @@ with tabs[2]:
     df = pd.DataFrame(prompt_data[:10])
 
     for idx, row in df.iterrows():
-        st.subheader(f"Rank {idx+1}")
-        
-        # Calculate the mean adherence score and IQA score
-        mean_adherence_score = sum(row["prompt_adherence_scores"]["0"]) / len(row["prompt_adherence_scores"]["0"])
-        iqa_score = row["iqa_scores"][0]
-        total_score = row["final_score"]
-        
-        st.image(row["images"][0], caption="")
-        
-        st.write(f"**Prompt Adherence Score**: {mean_adherence_score:.4f}")
-        st.write(f"**IQA Score**: {iqa_score:.4f}")
-        st.write(f"**Total Score**: {total_score:.4f}")
-        
-        st.markdown("---") 
+        try:
+            img_path = row["images"][0] 
+          
+            mean_adherence_score = sum(row["prompt_adherence_scores"]["0"]) / len(row["prompt_adherence_scores"]["0"])
+            iqa_score = row["iqa_scores"][0]
+            total_score = row["final_score"]
 
+            st.subheader(f"Rank {idx+1}")
+            st.image(img_path, caption="")
+            
+            st.write(f"**Prompt Adherence Score**: {mean_adherence_score:.4f}")
+            st.write(f"**IQA Score**: {iqa_score:.4f}")
+            st.write(f"**Total Score**: {total_score:.4f}")
+            
+            st.markdown("---") 
+        except Exception as ex:
+            print("Show imgage ex: ", ex)
