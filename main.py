@@ -301,14 +301,16 @@ with tabs[2]:
         return pa_score, final_score
     def _download_folder(repo_id, repo_type, folder_path, local_dir):
         files = list_repo_files(repo_id=repo_id, repo_type=repo_type)
+        file_names = []
         for file_path in files:
             if file_path.startswith(folder_path):
                 local_file_path = os.path.join(local_dir, file_path[len(folder_path)+1:])
                 if not os.path.exists(local_file_path):
                     os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
                     hf_hub_download(repo_id=repo_id, repo_type=repo_type, filename=file_path, local_dir=local_dir)
-
-
+            file_names.append(os.path.basename(file_path))
+        return file_names
+        
     oc_data_path = "data"
     oc_metadata_dir = os.path.join(oc_data_path, "metadata")
     oc_img_dir = os.path.join(oc_data_path, "images")
@@ -316,25 +318,28 @@ with tabs[2]:
     os.makedirs(oc_img_dir, exist_ok=True)
     repo_id = "nichetensor-org/open-category"
     repo_type="dataset"
-    _download_folder(repo_id=repo_id, repo_type=repo_type, folder_path="metadata", local_dir=oc_data_path)
-
+    metadata_file_names = _download_folder(repo_id=repo_id, repo_type=repo_type, folder_path="metadata", local_dir=oc_data_path)
+    
     metadata_files = os.listdir(oc_metadata_dir)
     oc_prompt_data = {}
     for file in metadata_files:
         file_path = os.path.join(oc_metadata_dir,  file)
-        file_time = os.path.getmtime(file_path)
-        with open(file_path) as f:
-            dt = json.load(f)
-        prompt = dt.get("prompt")
+        if file not in metadata_file_names:
+            os.remove(file_path)
+        else:
+            file_time = os.path.getmtime(file_path)
+            with open(file_path) as f:
+                dt = json.load(f)
+            prompt = dt.get("prompt")
 
-        dt["questions"] = [x.rstrip("Answer only Y or N.") for x in dt["questions"]]
-        dt["pa_score"], dt["final_score"] = calculate_score(dt["prompt_adherence_scores"]["0"], dt["iqa_scores"][0])
-        dt["iqa_score"] = [f"{x:.4f}"for x in dt["iqa_scores"]][0]
-        dt["file_time"] = file_time
-        if prompt not in oc_prompt_data:
-            oc_prompt_data[prompt] = []
-        if dt["final_score"] > 0:
-            oc_prompt_data[prompt].append(dt)
+            dt["questions"] = [x.rstrip("Answer only Y or N.") for x in dt["questions"]]
+            dt["pa_score"], dt["final_score"] = calculate_score(dt["prompt_adherence_scores"]["0"], dt["iqa_scores"][0])
+            dt["iqa_score"] = [f"{x:.4f}"for x in dt["iqa_scores"]][0]
+            dt["file_time"] = file_time
+            if prompt not in oc_prompt_data:
+                oc_prompt_data[prompt] = []
+            if dt["final_score"] > 0:
+                oc_prompt_data[prompt].append(dt)
 
     last_update_times = []
     for prompt, dt in oc_prompt_data.items():
@@ -342,9 +347,9 @@ with tabs[2]:
         latest_time = latest_file["file_time"]
         last_update_times.append(latest_time)
     combined = list(zip(last_update_times, oc_prompt_data.items()))
-    combined_sorted = sorted(combined, key=lambda x: x[1], reverse=True)[:MAX_PROMPT]
+    combined_sorted = sorted(combined, key=lambda x: x[0], reverse=True)[:MAX_PROMPT]
     oc_prompt_data = dict([x[1] for x in combined_sorted])
-
+    
     prompts = list(oc_prompt_data.keys())
     prompt_select = st.selectbox(
         "Select a prompt",
