@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import copy
 import streamlit.components.v1 as components
-from huggingface_hub import snapshot_download
+from huggingface_hub import snapshot_download, list_repo_files, hf_hub_download
 import os, json, random
 import graphviz
 import datetime
@@ -294,20 +294,29 @@ with tabs[1]:
 
 with tabs[2]:
     MAX_PROMPT = 10
-    SCORE_WEIGHTS = {"iqa": 0.3, "prompt_adherence": 0.7}
+    SCORE_WEIGHTS = {"iqa": 0.5, "prompt_adherence": 0.5}
     def calculate_score(prompt_adherence_scores, iqa_score):
         pa_score = sum(prompt_adherence_scores) / len(prompt_adherence_scores) if len(prompt_adherence_scores) > 0 else 0
         final_score = SCORE_WEIGHTS["prompt_adherence"] * pa_score + SCORE_WEIGHTS["iqa"] * iqa_score
         return pa_score, final_score
+    def _download_folder(repo_id, repo_type, folder_path, local_dir):
+        files = list_repo_files(repo_id=repo_id, repo_type=repo_type)
+        for file_path in files:
+            if file_path.startswith(folder_path):
+                local_file_path = os.path.join(local_dir, file_path[len(folder_path)+1:])
+                if not os.path.exists(local_file_path):
+                    os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
+                    hf_hub_download(repo_id=repo_id, repo_type=repo_type, filename=file_path, local_dir=local_dir)
+
 
     oc_data_path = "data"
-    os.makedirs(oc_data_path, exist_ok=True)
-    try:
-        snapshot_download(repo_id="nichetensor-org/open-category", repo_type="dataset", local_dir=oc_data_path)
-    except Exception as ex:
-        print("Download oc repo ex: ", ex)
     oc_metadata_dir = os.path.join(oc_data_path, "metadata")
     oc_img_dir = os.path.join(oc_data_path, "images")
+    os.makedirs(oc_metadata_dir, exist_ok=True)
+    os.makedirs(oc_img_dir, exist_ok=True)
+    repo_id = "nichetensor-org/open-category"
+    repo_type="dataset"
+    _download_folder(repo_id=repo_id, repo_type=repo_type, folder_path="metadata", local_dir=oc_data_path)
 
     metadata_files = os.listdir(oc_metadata_dir)
     oc_prompt_data = {}
@@ -317,12 +326,8 @@ with tabs[2]:
         with open(file_path) as f:
             dt = json.load(f)
         prompt = dt.get("prompt")
-        img_paths = []
-        for img_path in dt.get("images"):
-            img_path = os.path.join(oc_img_dir, img_path)
-            img_paths.append(img_path)
+
         dt["questions"] = [x.rstrip("Answer only Y or N.") for x in dt["questions"]]
-        dt["images"] = img_paths
         dt["pa_score"], dt["final_score"] = calculate_score(dt["prompt_adherence_scores"]["0"], dt["iqa_scores"][0])
         dt["iqa_score"] = [f"{x:.4f}"for x in dt["iqa_scores"]][0]
         dt["file_time"] = file_time
@@ -403,14 +408,17 @@ with tabs[2]:
 
     for idx, row in df.iterrows():
         try:
-            img_path = row["images"][0] 
-          
+            img_path = row["images"][0]
+            local_img_path = os.path.join("data/images", img_path)
+            if not os.path.exists(local_img_path):
+                hf_hub_download(repo_id=repo_id, repo_type=repo_type, filename=os.path.join("images", img_path), local_dir=oc_data_path)
+            
             mean_adherence_score = sum(row["prompt_adherence_scores"]["0"]) / len(row["prompt_adherence_scores"]["0"])
             iqa_score = row["iqa_scores"][0]
             total_score = row["final_score"]
 
             st.subheader(f"Rank {idx+1}")
-            st.image(img_path, caption="")
+            st.image(local_img_path, caption="")
             
             st.write(f"**Prompt Adherence Score**: {mean_adherence_score:.4f}")
             st.write(f"**IQA Score**: {iqa_score:.4f}")
