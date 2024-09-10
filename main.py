@@ -5,7 +5,9 @@ import pandas as pd
 import plotly.graph_objects as go
 import copy
 import streamlit.components.v1 as components
-
+from huggingface_hub import snapshot_download
+import os, json, random
+import graphviz
 st.set_page_config(page_title="SN23 Dashboard", layout="wide")
 
 st.markdown(
@@ -20,7 +22,7 @@ st.markdown(
     """,
      unsafe_allow_html=True
 )
-tabs = st.tabs(["**Dashboard**", "**Playground**"])
+tabs = st.tabs(["**Dashboard**", "**Playground**", "**Open Category**"])
 
 with tabs[0]:
     VALID_UIDS = ["202", "0", "178", "232", "28", "242", "78", "228", "17", "133", "200"]
@@ -287,3 +289,119 @@ with tabs[0]:
 
 with tabs[1]:
     components.iframe("https://app.nichetensor.com", height=1024)
+
+with tabs[2]:
+    SCORE_WEIGHTS = {"iqa": 0.3, "prompt_adherence": 0.7}
+    def calculate_score(prompt_adherence_scores, iqa_score):
+        pa_score = sum(prompt_adherence_scores) / len(prompt_adherence_scores) if len(prompt_adherence_scores) > 0 else 0
+        final_score = SCORE_WEIGHTS["prompt_adherence"] * pa_score + SCORE_WEIGHTS["iqa"] * iqa_score
+        return pa_score, final_score
+
+    oc_data_path = "data"
+    os.makedirs(oc_data_path, exist_ok=True)
+    try:
+        snapshot_download(repo_id="nichetensor-org/open-category", repo_type="dataset", local_dir=oc_data_path)
+    except Exception as ex:
+        print("Download oc repo ex: ", ex)
+    oc_metadata_dir = os.path.join(oc_data_path, "metadata")
+    oc_img_dir = os.path.join(oc_data_path, "images")
+
+    metadata_files = os.listdir(oc_metadata_dir)
+    oc_prompt_data = {}
+    for file in metadata_files:
+        file_path = os.path.join(oc_metadata_dir,  file)
+        with open(file_path) as f:
+            dt = json.load(f)
+        prompt = dt.get("prompt")
+        img_paths = []
+        for img_path in dt.get("images"):
+            img_path = os.path.join(oc_img_dir, img_path)
+            img_paths.append(img_path)
+        dt["questions"] = [x.rstrip("Answer only Y or N.") for x in dt["questions"]]
+        dt["images"] = img_paths
+        dt["pa_score"], dt["final_score"] = calculate_score(dt["prompt_adherence_scores"]["0"], dt["iqa_scores"][0])
+        dt["iqa_score"] = [f"{x:.4f}"for x in dt["iqa_scores"]][0]
+        
+        if prompt not in oc_prompt_data:
+            oc_prompt_data[prompt] = []
+        oc_prompt_data[prompt].append(dt)
+
+
+
+    prompts = list(oc_prompt_data.keys())
+    prompt_select = st.selectbox(
+        "Select a prompt",
+        prompts,
+        index=0
+    )
+    prompt_data = oc_prompt_data[prompt_select]
+    prompt_data = sorted(prompt_data, key = lambda x: -x["final_score"])
+
+    pd_data = pd.DataFrame(prompt_data)
+    st.header("**Total Information**")
+    st.dataframe(pd_data,
+        width=1200,
+        column_order = ("pa_score", "iqa_score", "final_score"),
+        column_config = {
+            "iqa_score": st.column_config.NumberColumn(
+                "IQA Score",
+            ),
+            "final_score": st.column_config.ProgressColumn(
+                "Overall Score",
+                format="%.2f",
+                min_value=0,
+                max_value=1,
+            ),
+            "pa_score": st.column_config.NumberColumn(
+                "Prompt Adherence Score"
+            ),
+        })
+
+    st.header("**Davidsonian Scene Graph**")
+    nodes = []
+    edges = []
+    questions = prompt_data[0]["questions"]
+    dependencies = prompt_data[0]["dependencies"]
+   
+    # Create a graphviz Digraph object
+    dot = graphviz.Digraph()
+    dot.attr(size='10,10', rankdir='TB', nodesep='0.5', ranksep='1.0', newrank='true')  
+
+    dot.node("-1", "root")
+    # Add nodes (questions) to the graph
+    for i, question in enumerate(questions):
+        dot.node(str(i), question)
+        
+    # Add edges (dependencies) to the graph
+    children = []
+    for child, parents in dependencies.items():
+        for parent in parents:
+            dot.edge(str(parent), str(child))
+        if len(parents) > 0:
+            children.append(child)
+    for i, question in enumerate(questions):
+        if str(i) not in children:
+            dot.edge("-1", str(i))
+
+    st.graphviz_chart(dot, use_container_width=True)
+
+
+
+    df = pd.DataFrame(prompt_data[:10])
+
+    for idx, row in df.iterrows():
+        st.subheader(f"Rank {idx+1}")
+        
+        # Calculate the mean adherence score and IQA score
+        mean_adherence_score = sum(row["prompt_adherence_scores"]["0"]) / len(row["prompt_adherence_scores"]["0"])
+        iqa_score = row["iqa_scores"][0]
+        total_score = row["final_score"]
+        
+        st.image(row["images"][0], caption="")
+        
+        st.write(f"**Prompt Adherence Score**: {mean_adherence_score:.4f}")
+        st.write(f"**IQA Score**: {iqa_score:.4f}")
+        st.write(f"**Total Score**: {total_score:.4f}")
+        
+        st.markdown("---") 
+
