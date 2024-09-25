@@ -433,6 +433,6 @@ with tabs[1]:
 #             st.write(f"**IQA Score**: {iqa_score:.4f}")
 #             st.write(f"**Total Score**: {total_score:.4f}")
             
-            st.markdown("---") 
-        except Exception as ex:
-            print("Show imgage ex: ", ex)
+        #     st.markdown("---") 
+        # except Exception as ex:
+        #     print("Show imgage ex: ", ex)
