@@ -73,7 +73,7 @@ with tabs[0]:
         VALIDATOR_UID = 202
         model_volumes = {}
         model_counts = {}
-        info = miner_info_data[str(VALIDATOR_UID)]["info"]
+        info = miner_info_data[int(VALIDATOR_UID)]["info"]
         for uid, metadata in info.items():
             if metadata["model_name"].strip():
                 if metadata["model_name"] not in model_volumes:
