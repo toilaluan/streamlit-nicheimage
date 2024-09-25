@@ -277,21 +277,21 @@ with tabs[0]:
         )
         st.plotly_chart(fig)
         
-        # Plot process time and success rate chart
-        df = pd.DataFrame(model_data)
-        fig = px.scatter(df, x="mean_process_time", y="success_rate", 
-                hover_data=["uid", "model_name", "mean_score"],
-                size="total_volume", color="uid"
-            )
-        fig.update_layout(
-            xaxis_title="Mean Process Time (seconds)",
-            yaxis_title="Success Rate",
-            xaxis=dict(range=[0, df["mean_process_time"].max() * 1.1]),
-            yaxis=dict(range=[0, 1.1]),
-            legend_title="UID",
-            width=1200
-        )
-        st.plotly_chart(fig)
+        # # Plot process time and success rate chart
+        # df = pd.DataFrame(model_data)
+        # fig = px.scatter(df, x="mean_process_time", y="success_rate", 
+        #         hover_data=["uid", "model_name", "mean_score"],
+        #         size="total_volume", color="uid"
+        #     )
+        # fig.update_layout(
+        #     xaxis_title="Mean Process Time (seconds)",
+        #     yaxis_title="Success Rate",
+        #     xaxis=dict(range=[0, df["mean_process_time"].max() * 1.1]),
+        #     yaxis=dict(range=[0, 1.1]),
+        #     legend_title="UID",
+        #     width=1200
+        # )
+        # st.plotly_chart(fig)
 
 with tabs[1]:
     components.iframe("https://app.nichetensor.com", height=1024)
