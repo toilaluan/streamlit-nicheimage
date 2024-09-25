@@ -73,7 +73,7 @@ with tabs[0]:
         VALIDATOR_UID = 202
         model_volumes = {}
         model_counts = {}
-        info = miner_info_data[int(VALIDATOR_UID)]["info"]
+        info = miner_info_data[str(VALIDATOR_UID)]["info"]
         for uid, metadata in info.items():
             if metadata["model_name"].strip():
                 if metadata["model_name"] not in model_volumes:
@@ -84,10 +84,10 @@ with tabs[0]:
                 model_counts[metadata["model_name"]] += 1
         return model_volumes, model_counts
 
-    if "stats" not in st.session_state:
-        response = requests.get("http://nichestorage.nichetensor.com:10000/get_miner_info")
-        response = response.json()
-        st.session_state.stats = response
+    # if "stats" not in st.session_state:
+    response = requests.get("http://nichestorage.nichetensor.com:10000/get_miner_info")
+    response = response.json()
+    st.session_state.stats = response
 
 
     all_validator_response = st.session_state.stats
