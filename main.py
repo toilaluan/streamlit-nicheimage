@@ -145,7 +145,7 @@ with tabs[0]:
     volumes = [x * 6 * 24 for x in list(model_volumes.values())]
     organic_volumes = [x * 0.8 for x in volumes]
     volume_per_miners = [volumes[i] / model_counts[model] for i,model in enumerate(models)]
-    volume_per_percentage_emission = [volumes[i] / (model_incentive_weight.get(model, 0) * 100)  if model_incentive_weightget(model, 0) > 0 else 0 for i,model in enumerate(models)]
+    volume_per_percentage_emission = [volumes[i] / (model_incentive_weight.get(model, 0) * 100)  if model_incentive_weight.get(model, 0) > 0 else 0 for i,model in enumerate(models)]
     total_volume = sum(volumes)
     volumes += [total_volume]
     organic_volumes += [sum(organic_volumes)]
