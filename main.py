@@ -119,7 +119,7 @@ with tabs[0]:
         go.Pie(
             values=list(model_distribution.values()),
             labels=list(model_distribution.keys()),
-            marker=dict(colors=[COLOR_MAP.get(model, "#ffffff) for model in model_distribution.keys()])
+            marker=dict(colors=[COLOR_MAP.get(model, "#ffffff") for model in model_distribution.keys()])
         ),
         row=1, col=1
     )
