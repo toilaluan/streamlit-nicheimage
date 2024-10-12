@@ -328,7 +328,7 @@ with tabs[2]:
     if not os.path.exists(oc_metadata_dir):
         try:
             pattern = "metadata/*"  # Pattern to match files
-            snapshot_download(repo_id=repo_id, repo_type=repo_type, local_dir=oc_data_path, allow_patterns=[pattern], max_workers=100)
+            snapshot_download(repo_id=repo_id, repo_type=repo_type, local_dir=oc_data_path, allow_patterns=[pattern], max_workers=50)
         except Exception as e:
             print("Exception:", str(e))
     metadata_file_names = _download_folder(repo_id=repo_id, repo_type=repo_type, folder_path="metadata", local_dir=oc_data_path)
