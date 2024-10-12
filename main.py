@@ -336,7 +336,7 @@ with tabs[2]:
         except Exception as e:
             print("Exception:", str(e))
     
-    metadata_file_names = _download_folder(repo_id=repo_id, repo_type=repo_type, folder_path="metadata", local_dir=oc_data_path)
+    metadata_file_names = os.listdir(oc_metadata_dir)
     print(len(metadata_file_names))
     
     metadata_files = os.listdir(oc_metadata_dir)
