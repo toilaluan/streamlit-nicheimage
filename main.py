@@ -299,6 +299,7 @@ with tabs[1]:
     components.iframe("https://app.nichetensor.com", height=1024)
 
 with tabs[2]:
+    print('hello')
     MAX_PROMPT = 10
     SCORE_WEIGHTS = {"iqa": 0.5, "prompt_adherence": 0.5}
     def calculate_score(prompt_adherence_scores, iqa_score):
