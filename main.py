@@ -299,13 +299,14 @@ with tabs[1]:
     components.iframe("https://app.nichetensor.com", height=1024)
 
 with tabs[2]:
-    print('hello')
     MAX_PROMPT = 10
     SCORE_WEIGHTS = {"iqa": 0.5, "prompt_adherence": 0.5}
+
     def calculate_score(prompt_adherence_scores, iqa_score):
         pa_score = sum(prompt_adherence_scores) / len(prompt_adherence_scores) if len(prompt_adherence_scores) > 0 else 0
         final_score = SCORE_WEIGHTS["prompt_adherence"] * pa_score + SCORE_WEIGHTS["iqa"] * iqa_score
         return pa_score, final_score
+        
     def _download_folder(repo_id, repo_type, folder_path, local_dir):
         files = list_repo_files(repo_id=repo_id, repo_type=repo_type)
         file_names = []
@@ -333,6 +334,8 @@ with tabs[2]:
             snapshot_download(repo_id=repo_id, repo_type=repo_type, local_dir=oc_data_path, allow_patterns=[pattern], max_workers=32)
         except Exception as e:
             print("Exception:", str(e))
+    
+    print('hello')
     metadata_file_names = _download_folder(repo_id=repo_id, repo_type=repo_type, folder_path="metadata", local_dir=oc_data_path)
     print(len(metadata_file_names))
     
