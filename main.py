@@ -320,23 +320,21 @@ with tabs[2]:
     oc_data_path = "data"
     oc_metadata_dir = os.path.join(oc_data_path, "metadata")
     oc_img_dir = os.path.join(oc_data_path, "images")
-    os.makedirs(oc_metadata_dir, exist_ok=True)
+    # os.makedirs(oc_metadata_dir, exist_ok=True)
     os.makedirs(oc_img_dir, exist_ok=True)
     repo_id = "nichetensor-org/open-category"
     repo_type="dataset"
     # download folder first because download each file will slower
-    # if not os.path.exists(oc_metadata_dir):
-    #     try:
-    #         os.makedirs(oc_metadata_dir, exist_ok=True)
-    #         pattern = "metadata/*"  # Pattern to match files
-    #         snapshot_download(repo_id=repo_id, repo_type=repo_type, local_dir=oc_data_path, allow_patterns=[pattern])
-    #     except Exception as e:
-    #         print("Exception:", str(e))
-    import time
-    start = time.time()
+    if not os.path.exists(oc_metadata_dir):
+        try:
+            os.makedirs(oc_metadata_dir, exist_ok=True)
+            pattern = "metadata/*"  # Pattern to match files
+            snapshot_download(repo_id=repo_id, repo_type=repo_type, local_dir=oc_data_path, allow_patterns=[pattern], max_workers=32)
+        except Exception as e:
+            print("Exception:", str(e))
     metadata_file_names = _download_folder(repo_id=repo_id, repo_type=repo_type, folder_path="metadata", local_dir=oc_data_path)
-    print("Time taken to download metadata files:", time.time() - start)
-
+    print(len(metadata_file_names))
+    
     metadata_files = os.listdir(oc_metadata_dir)
     oc_prompt_data = {}
     for file in metadata_files:
@@ -423,8 +421,6 @@ with tabs[2]:
             dot.edge("-1", str(i))
 
     st.graphviz_chart(dot, use_container_width=True)
-
-
 
     df = pd.DataFrame(prompt_data[:10])
 
