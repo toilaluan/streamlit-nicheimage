@@ -332,7 +332,7 @@ with tabs[2]:
         try:
             os.makedirs(oc_metadata_dir, exist_ok=True)
             pattern = "metadata/*"  # Pattern to match files
-            snapshot_download(repo_id=repo_id, repo_type=repo_type, local_dir=oc_data_path, allow_patterns=[pattern], max_workers=32)
+            snapshot_download(repo_id=repo_id, repo_type=repo_type, local_dir=oc_data_path, allow_patterns=[pattern], max_workers=16)
         except Exception as e:
             print("Exception:", str(e))
     
