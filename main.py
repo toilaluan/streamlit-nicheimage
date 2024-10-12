@@ -325,6 +325,7 @@ with tabs[2]:
     repo_id = "nichetensor-org/open-category"
     repo_type="dataset"
     # download folder first because download each file will slower
+    pattern = "metadata/*"  # Pattern to match files
     snapshot_download(repo_id=repo_id, repo_type=repo_type, local_dir=oc_data_path, allow_patterns=[pattern])
     metadata_file_names = _download_folder(repo_id=repo_id, repo_type=repo_type, folder_path="metadata", local_dir=oc_data_path)
     
