@@ -306,8 +306,9 @@ with tabs[2]:
         pa_score = sum(prompt_adherence_scores) / len(prompt_adherence_scores) if len(prompt_adherence_scores) > 0 else 0
         final_score = SCORE_WEIGHTS["prompt_adherence"] * pa_score + SCORE_WEIGHTS["iqa"] * iqa_score
         return pa_score, final_score
-        
+
     def _download_folder(repo_id, repo_type, folder_path, local_dir):
+        print('hello')
         files = list_repo_files(repo_id=repo_id, repo_type=repo_type)
         file_names = []
         for file_path in files:
@@ -335,7 +336,6 @@ with tabs[2]:
         except Exception as e:
             print("Exception:", str(e))
     
-    print('hello')
     metadata_file_names = _download_folder(repo_id=repo_id, repo_type=repo_type, folder_path="metadata", local_dir=oc_data_path)
     print(len(metadata_file_names))
     
