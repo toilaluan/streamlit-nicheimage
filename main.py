@@ -320,19 +320,23 @@ with tabs[2]:
     oc_data_path = "data"
     oc_metadata_dir = os.path.join(oc_data_path, "metadata")
     oc_img_dir = os.path.join(oc_data_path, "images")
-    # os.makedirs(oc_metadata_dir, exist_ok=True)
+    os.makedirs(oc_metadata_dir, exist_ok=True)
     os.makedirs(oc_img_dir, exist_ok=True)
     repo_id = "nichetensor-org/open-category"
     repo_type="dataset"
     # download folder first because download each file will slower
-    if not os.path.exists(oc_metadata_dir):
-        try:
-            pattern = "metadata/*"  # Pattern to match files
-            snapshot_download(repo_id=repo_id, repo_type=repo_type, local_dir=oc_data_path, allow_patterns=[pattern])
-        except Exception as e:
-            print("Exception:", str(e))
+    # if not os.path.exists(oc_metadata_dir):
+    #     try:
+    #         os.makedirs(oc_metadata_dir, exist_ok=True)
+    #         pattern = "metadata/*"  # Pattern to match files
+    #         snapshot_download(repo_id=repo_id, repo_type=repo_type, local_dir=oc_data_path, allow_patterns=[pattern])
+    #     except Exception as e:
+    #         print("Exception:", str(e))
+    import time
+    start = time.time()
     metadata_file_names = _download_folder(repo_id=repo_id, repo_type=repo_type, folder_path="metadata", local_dir=oc_data_path)
-    
+    print("Time taken to download metadata files:", time.time() - start)
+
     metadata_files = os.listdir(oc_metadata_dir)
     oc_prompt_data = {}
     for file in metadata_files:
