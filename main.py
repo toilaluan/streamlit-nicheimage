@@ -314,7 +314,7 @@ with tabs[2]:
                 if not os.path.exists(local_file_path):
                     os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
                     hf_hub_download(repo_id=repo_id, repo_type=repo_type, filename=file_path, local_dir=local_dir)
-            file_names.append(os.path.basename(file_path))
+                file_names.append(os.path.basename(file_path))
         return file_names
         
     oc_data_path = "data"
