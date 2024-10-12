@@ -308,7 +308,6 @@ with tabs[2]:
         return pa_score, final_score
 
     def _download_folder(repo_id, repo_type, folder_path, local_dir):
-        print('hello')
         files = list_repo_files(repo_id=repo_id, repo_type=repo_type)
         file_names = []
         for file_path in files:
@@ -318,6 +317,7 @@ with tabs[2]:
                     os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
                     hf_hub_download(repo_id=repo_id, repo_type=repo_type, filename=file_path, local_dir=local_dir)
                 file_names.append(os.path.basename(file_path))
+        print('hello')
         return file_names
         
     oc_data_path = "data"
