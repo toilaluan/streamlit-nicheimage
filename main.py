@@ -320,13 +320,14 @@ with tabs[2]:
     oc_data_path = "data"
     oc_metadata_dir = os.path.join(oc_data_path, "metadata")
     oc_img_dir = os.path.join(oc_data_path, "images")
-    os.makedirs(oc_metadata_dir, exist_ok=True)
+    # os.makedirs(oc_metadata_dir, exist_ok=True)
     os.makedirs(oc_img_dir, exist_ok=True)
     repo_id = "nichetensor-org/open-category"
     repo_type="dataset"
     # download folder first because download each file will slower
-    pattern = "metadata/*"  # Pattern to match files
-    snapshot_download(repo_id=repo_id, repo_type=repo_type, local_dir=oc_data_path, allow_patterns=[pattern])
+    if not os.path.exists(oc_metadata_dir):
+        pattern = "metadata/*"  # Pattern to match files
+        snapshot_download(repo_id=repo_id, repo_type=repo_type, local_dir=oc_data_path, allow_patterns=[pattern], max_workers=100)
     metadata_file_names = _download_folder(repo_id=repo_id, repo_type=repo_type, folder_path="metadata", local_dir=oc_data_path)
     
     metadata_files = os.listdir(oc_metadata_dir)
