@@ -310,7 +310,7 @@ with tabs[2]:
     def _download_folder(repo_id, repo_type, folder_path, local_dir):
         import time
         start = time.time()
-        files = fs.ls(os.path.join(repo_id, folder_path))
+        files = fs.ls(os.path.join('datasets', repo_id, folder_path))
         print("func() take: ", time.time() - start)
         file_names = []
         start = time.time()
