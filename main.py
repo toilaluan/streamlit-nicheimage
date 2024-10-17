@@ -308,7 +308,10 @@ with tabs[2]:
         return pa_score, final_score
 
     def _download_folder(repo_id, repo_type, folder_path, local_dir):
+        import time
+        start = time.time()
         files = list_repo_files(repo_id=repo_id, repo_type=repo_type)
+        print("list_repo_files: ", time.time() - start)
         file_names = []
         print('hi')
         for file_path in files:
