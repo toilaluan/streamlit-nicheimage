@@ -434,6 +434,7 @@ with tabs[2]:
             local_img_path = os.path.join("data/images", img_path)
             if not os.path.exists(local_img_path):
                 hf_hub_download(repo_id=repo_id, repo_type=repo_type, filename=os.path.join("images", img_path), local_dir=oc_data_path)
+                print(img_path)
             
             mean_adherence_score = sum(row["prompt_adherence_scores"]["0"]) / len(row["prompt_adherence_scores"]["0"])
             iqa_score = row["iqa_scores"][0]
