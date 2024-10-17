@@ -86,6 +86,24 @@ with tabs[0]:
                 model_counts[metadata["model_name"]] += 1
         return model_volumes, model_counts
 
+    def _get_incentive_weight(catalogue):
+        model_incentive_weight = {k:v["model_incentive_weight"] for k,v in catalogue.items()}
+        return model_incentive_weight
+    
+    def get_random_color():
+        return "#{:06x}".format(random.randint(0, 0xFFFFFF))
+
+    def _assign_color(model_name):
+        if model_name not in COLOR_MAP:
+            existing_colors = set(COLOR_MAP.values())
+            new_color = get_random_color()
+            
+            while new_color in existing_colors:
+                new_color = get_random_color()
+            COLOR_MAP[model_name] = new_color
+            return new_color
+        return COLOR_MAP[model_name]
+    
     # if "stats" not in st.session_state:
     response = requests.get("http://nichestorage.nichetensor.com:10000/get_miner_info")
     response = response.json()
@@ -106,6 +124,8 @@ with tabs[0]:
     )
     validator_select = str(validator_select)
     response = all_validator_response[validator_select]
+    if "catalogue" in response:
+        model_incentive_weight = _get_incentive_weight(response["catalogue"])
     # Plot distribution of models
     model_distribution = {}
     for uid, info in response["info"].items():
@@ -119,7 +139,7 @@ with tabs[0]:
         go.Pie(
             values=list(model_distribution.values()),
             labels=list(model_distribution.keys()),
-            marker=dict(colors=[COLOR_MAP.get(model, "#ffffff") for model in model_distribution.keys()])
+            marker=dict(colors=[_assign_color(model) for model in model_distribution.keys()])
         ),
         row=1, col=1
     )
