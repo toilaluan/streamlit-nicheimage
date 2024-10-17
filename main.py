@@ -9,7 +9,6 @@ from huggingface_hub import snapshot_download, list_repo_files, hf_hub_download
 import os, json, random
 import graphviz
 import datetime
-from pathlib import Path
 
 st.set_page_config(page_title="SN23 Dashboard", layout="wide")
 
@@ -344,27 +343,26 @@ with tabs[2]:
     metadata_file_names = _download_folder(repo_id, repo_type, folder_path='metadata', local_dir=oc_metadata_dir)
     print(len(metadata_file_names))
     
-    metadata_files = os.listdir(oc_metadata_dir)
+    metadata_files = [f for f in os.listdir(oc_metadata_dir) if os.path.isfile(os.path.join(oc_metadata_dir, f))]
     oc_prompt_data = {}
     for file in metadata_files:
         file_path = os.path.join(oc_metadata_dir,  file)
-        if Path(file_path).is_file():
-            if file not in metadata_file_names:
-                os.remove(file_path)
-            else:
-                file_time = os.path.getmtime(file_path)
-                with open(file_path) as f:
-                    dt = json.load(f)
-                prompt = dt.get("prompt")
+        if file not in metadata_file_names:
+            os.remove(file_path)
+        else:
+            file_time = os.path.getmtime(file_path)
+            with open(file_path) as f:
+                dt = json.load(f)
+            prompt = dt.get("prompt")
 
-                dt["questions"] = [x.rstrip("Answer only Y or N.") for x in dt["questions"]]
-                dt["pa_score"], dt["final_score"] = calculate_score(dt["prompt_adherence_scores"]["0"], dt["iqa_scores"][0])
-                dt["iqa_score"] = [f"{x:.4f}"for x in dt["iqa_scores"]][0]
-                dt["file_time"] = file_time 
-                if dt["final_score"] > 0:
-                    if prompt not in oc_prompt_data:
-                        oc_prompt_data[prompt] = []
-                    oc_prompt_data[prompt].append(dt)
+            dt["questions"] = [x.rstrip("Answer only Y or N.") for x in dt["questions"]]
+            dt["pa_score"], dt["final_score"] = calculate_score(dt["prompt_adherence_scores"]["0"], dt["iqa_scores"][0])
+            dt["iqa_score"] = [f"{x:.4f}"for x in dt["iqa_scores"]][0]
+            dt["file_time"] = file_time 
+            if dt["final_score"] > 0:
+                if prompt not in oc_prompt_data:
+                    oc_prompt_data[prompt] = []
+                oc_prompt_data[prompt].append(dt)
 
     last_update_times = []
     for prompt, dt in oc_prompt_data.items():
