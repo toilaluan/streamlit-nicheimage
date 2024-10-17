@@ -310,6 +310,7 @@ with tabs[2]:
     def _download_folder(repo_id, repo_type, folder_path, local_dir):
         files = list_repo_files(repo_id=repo_id, repo_type=repo_type)
         file_names = []
+        print('hi')
         for file_path in files:
             if file_path.startswith(folder_path):
                 local_file_path = os.path.join(local_dir, file_path[len(folder_path)+1:])
