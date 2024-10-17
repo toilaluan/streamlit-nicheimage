@@ -313,7 +313,6 @@ with tabs[2]:
         files = list_repo_files(repo_id=repo_id, repo_type=repo_type)
         print("list_repo_files() take: ", time.time() - start)
         file_names = []
-        start = time.time()
         for file_path in files:
             if file_path.startswith(folder_path):
                 local_file_path = os.path.join(local_dir, file_path[len(folder_path)+1:])
@@ -321,7 +320,6 @@ with tabs[2]:
                     os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
                     hf_hub_download(repo_id=repo_id, repo_type=repo_type, filename=file_path, local_dir=local_dir)
                 file_names.append(os.path.basename(file_path))
-        print('loop take', time.time() - start)
         return file_names
         
     oc_data_path = "data"
@@ -331,6 +329,7 @@ with tabs[2]:
     os.makedirs(oc_img_dir, exist_ok=True)
     repo_id = "nichetensor-org/open-category"
     repo_type="dataset"
+    
     # download folder first because download each file will slower
     if not os.path.exists(oc_metadata_dir):
         try:
