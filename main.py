@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import copy
 import streamlit.components.v1 as components
-from huggingface_hub import snapshot_download, HfFileSystem, hf_hub_download
+from huggingface_hub import snapshot_download, list_repo_files, hf_hub_download
 import os, json, random
 import graphviz
 import datetime
@@ -310,8 +310,8 @@ with tabs[2]:
     def _download_folder(repo_id, repo_type, folder_path, local_dir):
         import time
         start = time.time()
-        files = fs.ls(os.path.join('datasets', repo_id, folder_path))
-        print("func() take: ", time.time() - start)
+        files = list_repo_files(repo_id=repo_id, repo_type=repo_type)
+        print("list_repo_files() take: ", time.time() - start)
         file_names = []
         start = time.time()
         for file_path in files:
@@ -339,8 +339,8 @@ with tabs[2]:
             snapshot_download(repo_id=repo_id, repo_type=repo_type, local_dir=oc_data_path, allow_patterns=[pattern], max_workers=16)
         except Exception as e:
             print("Exception:", str(e))
-    fs = HfFileSystem()
-    metadata_file_names = _download_folder(repo_id, repo_type, folder_path="metadata", local_dir=oc_metadata_dir)
+    
+    metadata_file_names = os.listdir(oc_metadata_dir)
     print(len(metadata_file_names))
     
     metadata_files = os.listdir(oc_metadata_dir)
