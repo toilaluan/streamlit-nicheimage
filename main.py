@@ -379,6 +379,9 @@ with tabs[2]:
         prompts,
         index=0
     )
+    print(oc_prompt_data)
+    print(prompt_select)
+    print(prompts)
     prompt_data = oc_prompt_data[prompt_select]
     prompt_data = sorted(prompt_data, key = lambda x: -x["final_score"])
 
