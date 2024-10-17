@@ -340,7 +340,7 @@ with tabs[2]:
             print("Exception:", str(e))
     
     # metadata_file_names = os.listdir(oc_metadata_dir)
-    metadata_file_names = _download_folder(repo_id, repo_type, folder_path='metadata', local_dir=oc_metadata_dir)
+    metadata_file_names = _download_folder(repo_id, repo_type, folder_path='metadata', local_dir=oc_data_path)
     print(len(metadata_file_names))
     
     metadata_files = [f for f in os.listdir(oc_metadata_dir) if os.path.isfile(os.path.join(oc_metadata_dir, f))]
@@ -381,9 +381,6 @@ with tabs[2]:
         prompts,
         index=0
     )
-    print(oc_prompt_data)
-    print(prompt_select)
-    print(prompts)
     prompt_data = oc_prompt_data[prompt_select]
     prompt_data = sorted(prompt_data, key = lambda x: -x["final_score"])
 
