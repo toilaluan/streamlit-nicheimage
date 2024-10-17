@@ -9,6 +9,7 @@ from huggingface_hub import snapshot_download, list_repo_files, hf_hub_download
 import os, json, random
 import graphviz
 import datetime
+from pathlib import Path
 
 st.set_page_config(page_title="SN23 Dashboard", layout="wide")
 
@@ -329,7 +330,7 @@ with tabs[2]:
     os.makedirs(oc_img_dir, exist_ok=True)
     repo_id = "nichetensor-org/open-category"
     repo_type="dataset"
-    
+
     # download folder first because download each file will slower
     if not os.path.exists(oc_metadata_dir):
         try:
@@ -347,7 +348,7 @@ with tabs[2]:
     oc_prompt_data = {}
     for file in metadata_files:
         file_path = os.path.join(oc_metadata_dir,  file)
-        if file not in metadata_file_names:
+        if Path(file_path).is_file() and file not in metadata_file_names:
             os.remove(file_path)
         else:
             file_time = os.path.getmtime(file_path)
