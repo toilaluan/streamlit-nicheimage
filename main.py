@@ -348,22 +348,23 @@ with tabs[2]:
     oc_prompt_data = {}
     for file in metadata_files:
         file_path = os.path.join(oc_metadata_dir,  file)
-        if Path(file_path).is_file() and file not in metadata_file_names:
-            os.remove(file_path)
-        else:
-            file_time = os.path.getmtime(file_path)
-            with open(file_path) as f:
-                dt = json.load(f)
-            prompt = dt.get("prompt")
+        if Path(file_path).is_file():
+            if file not in metadata_file_names:
+                os.remove(file_path)
+            else:
+                file_time = os.path.getmtime(file_path)
+                with open(file_path) as f:
+                    dt = json.load(f)
+                prompt = dt.get("prompt")
 
-            dt["questions"] = [x.rstrip("Answer only Y or N.") for x in dt["questions"]]
-            dt["pa_score"], dt["final_score"] = calculate_score(dt["prompt_adherence_scores"]["0"], dt["iqa_scores"][0])
-            dt["iqa_score"] = [f"{x:.4f}"for x in dt["iqa_scores"]][0]
-            dt["file_time"] = file_time 
-            if dt["final_score"] > 0:
-                if prompt not in oc_prompt_data:
-                    oc_prompt_data[prompt] = []
-                oc_prompt_data[prompt].append(dt)
+                dt["questions"] = [x.rstrip("Answer only Y or N.") for x in dt["questions"]]
+                dt["pa_score"], dt["final_score"] = calculate_score(dt["prompt_adherence_scores"]["0"], dt["iqa_scores"][0])
+                dt["iqa_score"] = [f"{x:.4f}"for x in dt["iqa_scores"]][0]
+                dt["file_time"] = file_time 
+                if dt["final_score"] > 0:
+                    if prompt not in oc_prompt_data:
+                        oc_prompt_data[prompt] = []
+                    oc_prompt_data[prompt].append(dt)
 
     last_update_times = []
     for prompt, dt in oc_prompt_data.items():
