@@ -344,8 +344,6 @@ with tabs[2]:
     print(len(metadata_file_names))
     
     metadata_files = [f for f in os.listdir(oc_metadata_dir) if os.path.isfile(os.path.join(oc_metadata_dir, f))]
-    print(metadata_files)
-    print(os.listdir(oc_metadata_dir))
     oc_prompt_data = {}
     for file in metadata_files:
         file_path = os.path.join(oc_metadata_dir,  file)
