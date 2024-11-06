@@ -27,7 +27,7 @@ st.markdown(
 tabs = st.tabs(["**Dashboard**", "**Playground**", "**Open Category**"])
 
 with tabs[0]:
-    VALID_UIDS = ["202", "0", "181", "178", "28", "232", "78", "228", "242", "17", "133", "105", "7", "1", "244"]
+    VALID_UIDS = ["202", "0", "181", "178", "28", "232", "78", "228", "242", "17", "133", "105", "7", "1", "244", "186", "58", "161"]
     model_incentive_weight = {
         'AnimeV3': 0.18, 
         'JuggernautXL': 0.15, 
