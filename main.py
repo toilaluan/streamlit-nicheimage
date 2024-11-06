@@ -105,7 +105,7 @@ with tabs[0]:
         return COLOR_MAP[model_name]
     
     # if "stats" not in st.session_state:
-    response = requests.get("http://nichestorage.nichetensor.com:10000/get_miner_info")
+    response = requests.get("http://storage.nichetensor.com/get_miner_info")
     response = response.json()
     st.session_state.stats = response
 
