@@ -148,7 +148,7 @@ with tabs[0]:
         go.Pie(
             values=list(model_incentive_weight.values()),
             labels=list(model_incentive_weight.keys()),
-            marker=dict(colors=[COLOR_MAP[model] for model in model_incentive_weight.keys()])
+            marker=dict(colors=[_assign_color(model) for model in model_incentive_weight.keys()])
         ),
         row=1, col=2
     )
