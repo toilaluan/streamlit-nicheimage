@@ -312,6 +312,7 @@ with tabs[2]:
         start = time.time()
         files = list_repo_files(repo_id=repo_id, repo_type=repo_type)
         print("list_repo_files() take: ", time.time() - start)
+        start = time.time()
         file_names = []
         for file_path in files:
             if file_path.startswith(folder_path):
@@ -320,6 +321,7 @@ with tabs[2]:
                     os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
                     hf_hub_download(repo_id=repo_id, repo_type=repo_type, filename=file_path, local_dir=local_dir)
                 file_names.append(os.path.basename(file_path))
+        print("hf_hub_download() take: ", time.time() - start)
         return file_names
         
     oc_data_path = "data"
