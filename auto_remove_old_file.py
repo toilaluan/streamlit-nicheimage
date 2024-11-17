@@ -1,16 +1,19 @@
+from datetime import datetime, timezone
 import time
 from huggingface_hub import HfFileSystem
 fs = HfFileSystem()
 
-def rm_old_file():
+def rm_old_file(k_days=30):
     # List all files in a directory
     files = fs.ls("datasets/nichetensor-org/open-category/images", detail=False)
     start = time.time()
-    sorted_files = sorted(files, key=lambda y: fs.info(y)['last_commit'].date)
     print(time.time()-start)
-    # Delete the oldest 100 files
-    for y in sorted_files[:100]:
-        fs.rm(y)
+    # Delete files older than k_days
+    for file in files:
+        last_commit_date = fs.info(files[0])['last_commit'].date
+        if (datetime.now(timezone.utc) - last_commit_date).days > k_days:
+            fs.rm(file)
+            print(f"Deleted file: {file}")
     print('---------------')
 
 try:
