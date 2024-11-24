@@ -26,43 +26,43 @@ st.markdown(
 )
 tabs = st.tabs(["**Dashboard**", "**Playground**", "**Open Category**"])
 
-# with tabs[0]:
-#     VALID_UIDS = ["202", "0", "181", "178", "28", "232", "78", "228", "242", "17", "133", "105", "7", "1", "244"]
-#     model_incentive_weight = {
-#         'AnimeV3': 0.18, 
-#         'JuggernautXL': 0.15, 
-#         'RealitiesEdgeXL': 0.19, 
-#         'Gemma7b': 0.03, 
-#         'StickerMaker': 0.03, 
-#         'FaceToMany': 0.00, 
-#         'Kolors': 0.10, 
-#         'FluxSchnell': 0.12, 
-#         'DreamShaperXL': 0.00, 
-#         'Llama3_70b': 0.05, 
-#         'GoJourney': 0.04, 
-#         'SUPIR': 0.08,
-#         'OpenGeneral': 0.01,
-#         'OpenDigitalArt': 0.01,
-#         'Pixtral_12b': 0.01
-#     }
-#     COLOR_MAP = {
-#         'AnimeV3': "#1f77b4", 
-#         'JuggernautXL': "#ff7f0e", 
-#         'RealitiesEdgeXL': "#2ca02c", 
-#         'Gemma7b': "#d62728", 
-#         'StickerMaker': "#9467bd", 
-#         'FaceToMany': "#8c564b", 
-#         'Kolors': "#e377c2", 
-#         'FluxSchnell': "#bcbd22", 
-#         'DreamShaperXL': "#7f7f7f", 
-#         'Llama3_70b': "#f7b6d2", 
-#         'GoJourney': "#17becf", 
-#         'SUPIR': "#c5b0d5",
-#         "": "#ffffcc",
-#         "OpenGeneral": "#98df8a ",
-#         "OpenDigitalArt": "#ffbb78",
-#         "Pixtral_12b": "#373606"
-#     }
+with tabs[0]:
+    VALID_UIDS = ["202", "0", "181", "178", "28", "232", "78", "228", "242", "17", "133", "105", "7", "1", "244", "186", "58", "161"]
+    model_incentive_weight = {
+        'AnimeV3': 0.18, 
+        'JuggernautXL': 0.15, 
+        'RealitiesEdgeXL': 0.19, 
+        'Gemma7b': 0.03, 
+        'StickerMaker': 0.03, 
+        'FaceToMany': 0.00, 
+        'Kolors': 0.10, 
+        'FluxSchnell': 0.12, 
+        'DreamShaperXL': 0.00, 
+        'Llama3_70b': 0.05, 
+        'GoJourney': 0.04, 
+        'SUPIR': 0.08,
+        'OpenGeneral': 0.01,
+        'OpenDigitalArt': 0.01,
+        'Pixtral_12b': 0.01
+    }
+    COLOR_MAP = {
+        'AnimeV3': "#1f77b4", 
+        'JuggernautXL': "#ff7f0e", 
+        'RealitiesEdgeXL': "#2ca02c", 
+        'Gemma7b': "#d62728", 
+        'StickerMaker': "#9467bd", 
+        'FaceToMany': "#8c564b", 
+        'Kolors': "#e377c2", 
+        'FluxSchnell': "#bcbd22", 
+        'DreamShaperXL': "#7f7f7f", 
+        'Llama3_70b': "#f7b6d2", 
+        'GoJourney': "#17becf", 
+        'SUPIR': "#c5b0d5",
+        "": "#ffffcc",
+        "OpenGeneral": "#98df8a ",
+        "OpenDigitalArt": "#ffbb78",
+        "Pixtral_12b": "#373606"
+    }
 
 #     st.markdown(
 #         """
@@ -71,67 +71,87 @@ tabs = st.tabs(["**Dashboard**", "**Playground**", "**Open Category**"])
 #         unsafe_allow_html=True,
 #     )
 
-#     def get_total_volumes(miner_info_data):
-#         VALIDATOR_UID = 202
-#         model_volumes = {}
-#         model_counts = {}
-#         info = miner_info_data[str(VALIDATOR_UID)]["info"]
-#         for uid, metadata in info.items():
-#             if metadata["model_name"].strip():
-#                 if metadata["model_name"] not in model_volumes:
-#                     model_volumes[metadata["model_name"]] = 0
-#                 if metadata["model_name"] not in model_counts:
-#                     model_counts[metadata["model_name"]] = 0
-#                 model_volumes[metadata["model_name"]] += metadata["total_volume"]
-#                 model_counts[metadata["model_name"]] += 1
-#         return model_volumes, model_counts
+    def get_total_volumes(miner_info_data):
+        VALIDATOR_UID = 202
+        model_volumes = {}
+        model_counts = {}
+        info = miner_info_data[str(VALIDATOR_UID)]["info"]
+        for uid, metadata in info.items():
+            if metadata["model_name"].strip():
+                if metadata["model_name"] not in model_volumes:
+                    model_volumes[metadata["model_name"]] = 0
+                if metadata["model_name"] not in model_counts:
+                    model_counts[metadata["model_name"]] = 0
+                model_volumes[metadata["model_name"]] += metadata["total_volume"]
+                model_counts[metadata["model_name"]] += 1
+        return model_volumes, model_counts
 
-#     # if "stats" not in st.session_state:
-#     response = requests.get("http://nichestorage.nichetensor.com:10000/get_miner_info")
-#     response = response.json()
-#     st.session_state.stats = response
+    def _get_incentive_weight(catalogue):
+        model_incentive_weight = {k:v["model_incentive_weight"] for k,v in catalogue.items()}
+        return model_incentive_weight
+    
+    def get_random_color():
+        return "#{:06x}".format(random.randint(0, 0xFFFFFF))
+
+    def _assign_color(model_name):
+        if model_name not in COLOR_MAP:
+            existing_colors = set(COLOR_MAP.values())
+            new_color = get_random_color()
+            
+            while new_color in existing_colors:
+                new_color = get_random_color()
+            COLOR_MAP[model_name] = new_color
+            return new_color
+        return COLOR_MAP[model_name]
+    
+    # if "stats" not in st.session_state:
+    response = requests.get("http://storage.nichetensor.com/get_miner_info")
+    response = response.json()
+    st.session_state.stats = response
 
 
-#     all_validator_response = st.session_state.stats
-#     model_volumes, model_counts = get_total_volumes(all_validator_response)
-#     all_validator_response = {k: v for k, v in all_validator_response.items() if str(k) in VALID_UIDS}
-#     validator_uids = list(all_validator_response.keys())
-#     validator_uids = [int(uid) for uid in validator_uids]
-#     validator_uids = sorted(validator_uids)
-#     print(validator_uids)
-#     validator_select = st.selectbox(
-#         "Select a validator",
-#         validator_uids,
-#         index=validator_uids.index(202)
-#     )
-#     validator_select = str(validator_select)
-#     response = all_validator_response[validator_select]
-#     # Plot distribution of models
-#     model_distribution = {}
-#     for uid, info in response["info"].items():
-#         model_name = info["model_name"]
-#         model_distribution[model_name] = model_distribution.get(model_name, 0) + 1
+    all_validator_response = st.session_state.stats
+    model_volumes, model_counts = get_total_volumes(all_validator_response)
+    all_validator_response = {k: v for k, v in all_validator_response.items() if str(k) in VALID_UIDS}
+    validator_uids = list(all_validator_response.keys())
+    validator_uids = [int(uid) for uid in validator_uids]
+    validator_uids = sorted(validator_uids)
+    print(validator_uids)
+    validator_select = st.selectbox(
+        "Select a validator",
+        validator_uids,
+        index=validator_uids.index(202)
+    )
+    validator_select = str(validator_select)
+    response = all_validator_response[validator_select]
+    if "catalogue" in response:
+        model_incentive_weight = _get_incentive_weight(response["catalogue"])
+    # Plot distribution of models
+    model_distribution = {}
+    for uid, info in response["info"].items():
+        model_name = info["model_name"]
+        model_distribution[model_name] = model_distribution.get(model_name, 0) + 1
 
-#     from plotly.subplots import make_subplots
-#     fig = make_subplots(rows=1, cols=2, specs=[[{"type": "domain"}, {"type": "domain"}]], subplot_titles=("Model Distribution", "Emission Distribution"))
-#     # Plot Model Distribution
-#     fig.add_trace(
-#         go.Pie(
-#             values=list(model_distribution.values()),
-#             labels=list(model_distribution.keys()),
-#             marker=dict(colors=[COLOR_MAP.get(model, "#ffffff") for model in model_distribution.keys()])
-#         ),
-#         row=1, col=1
-#     )
-#     # Plot Emission Distribution
-#     fig.add_trace(
-#         go.Pie(
-#             values=list(model_incentive_weight.values()),
-#             labels=list(model_incentive_weight.keys()),
-#             marker=dict(colors=[COLOR_MAP[model] for model in model_incentive_weight.keys()])
-#         ),
-#         row=1, col=2
-#     )
+    from plotly.subplots import make_subplots
+    fig = make_subplots(rows=1, cols=2, specs=[[{"type": "domain"}, {"type": "domain"}]], subplot_titles=("Model Distribution", "Emission Distribution"))
+    # Plot Model Distribution
+    fig.add_trace(
+        go.Pie(
+            values=list(model_distribution.values()),
+            labels=list(model_distribution.keys()),
+            marker=dict(colors=[_assign_color(model) for model in model_distribution.keys()])
+        ),
+        row=1, col=1
+    )
+    # Plot Emission Distribution
+    fig.add_trace(
+        go.Pie(
+            values=list(model_incentive_weight.values()),
+            labels=list(model_incentive_weight.keys()),
+            marker=dict(colors=[_assign_color(model) for model in model_incentive_weight.keys()])
+        ),
+        row=1, col=2
+    )
 
 #     fig.update_layout(
 #         title_text="Distribution",
