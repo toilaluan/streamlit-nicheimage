@@ -8,9 +8,13 @@ COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
 COPY main.py ./
+COPY auto_remove_old_file.py ./
+
+COPY start.sh ./
+RUN chmod +x start.sh
 
 EXPOSE 8501
 
 RUN rm -rf ~/.cache/pip
 
-CMD ["streamlit", "run", "main.py"]
+CMD ["./start.sh"]

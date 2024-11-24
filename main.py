@@ -328,42 +328,27 @@ with tabs[2]:
         return pa_score, final_score
 
     def _download_folder(repo_id, repo_type, folder_path, local_dir):
-        import time
-        start = time.time()
         files = list_repo_files(repo_id=repo_id, repo_type=repo_type)
-        print("list_repo_files() take: ", time.time() - start)
-        start = time.time()
         file_names = []
-        # for file_path in files:
-        #     if file_path.startswith(folder_path):
-        #         local_file_path = os.path.join(local_dir, file_path[len(folder_path)+1:])
-        #         if not os.path.exists(local_file_path):
-        #             os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
-        #             hf_hub_download(repo_id=repo_id, repo_type=repo_type, filename=file_path, local_dir=local_dir)
-        #         file_names.append(os.path.basename(file_path))
-        print("hf_hub_download() take: ", time.time() - start)
+        for file_path in files:
+            if file_path.startswith(folder_path):
+                local_file_path = os.path.join(local_dir, file_path[len(folder_path)+1:])
+                if not os.path.exists(local_file_path):
+                    os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
+                    hf_hub_download(repo_id=repo_id, repo_type=repo_type, filename=file_path, local_dir=local_dir)
+                file_names.append(os.path.basename(file_path))
         return file_names
         
     oc_data_path = "data"
     oc_metadata_dir = os.path.join(oc_data_path, "metadata")
     oc_img_dir = os.path.join(oc_data_path, "images")
-    # os.makedirs(oc_metadata_dir, exist_ok=True)
+    os.makedirs(oc_metadata_dir, exist_ok=True)
     os.makedirs(oc_img_dir, exist_ok=True)
     repo_id = "nichetensor-org/open-category"
     repo_type="dataset"
-
-    # download folder first because download each file will slower
-    if not os.path.exists(oc_metadata_dir):
-        try:
-            os.makedirs(oc_metadata_dir, exist_ok=True)
-            pattern = "metadata/*"  # Pattern to match files
-            snapshot_download(repo_id=repo_id, repo_type=repo_type, local_dir=oc_data_path, allow_patterns=[pattern], max_workers=16)
-        except Exception as e:
-            print("Exception:", str(e))
     
     # metadata_file_names = os.listdir(oc_metadata_dir)
     metadata_file_names = _download_folder(repo_id, repo_type, folder_path='metadata', local_dir=oc_data_path)
-    print(len(metadata_file_names))
     
     metadata_files = [f for f in os.listdir(oc_metadata_dir) if os.path.isfile(os.path.join(oc_metadata_dir, f))]
     oc_prompt_data = {}
