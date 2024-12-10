@@ -10,3 +10,4 @@ pymongo
 streamlit-vis-timeline==0.3.0
 graphviz==0.20.3
 huggingface-hub
+seaborn
